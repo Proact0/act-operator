@@ -206,21 +206,14 @@ Ensure: All nodes connected, all paths reach END, conditionals labeled.
 
 > `langgraph`, `langchain` included. Identify **additional** dependencies only.
 
-**Proactive Detection**: Analyze the architecture diagram and node specifications to identify required tech stack categories. Ask questions for ALL detected needs.
+**Proactive Approach**: Analyze the architecture diagram to identify ALL technology choices user needs to make. Proactively ask about each relevant category using AskUserQuestion.
 
-**Detection Checklist** (check diagram for these patterns):
-| Pattern Detected | Ask About |
-|------------------|-----------|
-| LLM/AI nodes | LLM Provider |
-| RAG, embedding, search | Vector Store |
-| State persistence, history | Database |
-| Web scraping, API calls | HTTP/External Tools |
-| Document parsing | File Processing |
-| Real-time, streaming | Message Queue/Cache |
+**Guideline**: For each technology category detected in the architecture (LLM providers, vector stores, databases, HTTP clients, file processors, etc.), create an AskUserQuestion with:
+- Clear question about which option to use
+- 3-4 common options with brief descriptions
+- `multiSelect: true` if multiple tools may be needed together
 
-**Use AskUserQuestion for each detected category:**
-
-**If LLM/AI nodes detected:**
+**Example Format:**
 ```json
 {
   "question": "Which LLM provider should be used?",
@@ -232,51 +225,6 @@ Ensure: All nodes connected, all paths reach END, conditionals labeled.
     {"label": "Google", "description": "Gemini models"}
   ],
   "multiSelect": false
-}
-```
-
-**If retrieval/search/RAG detected:**
-```json
-{
-  "question": "Which vector store should be used?",
-  "header": "Vector Store",
-  "options": [
-    {"label": "Chroma", "description": "Local, lightweight vector store"},
-    {"label": "Pinecone", "description": "Managed cloud vector database"},
-    {"label": "FAISS", "description": "Facebook AI Similarity Search"},
-    {"label": "Weaviate", "description": "Open-source vector search engine"}
-  ],
-  "multiSelect": false
-}
-```
-
-**If state persistence/history detected:**
-```json
-{
-  "question": "How should state/history be persisted?",
-  "header": "Database",
-  "options": [
-    {"label": "SQLite", "description": "Local file-based, simple setup"},
-    {"label": "PostgreSQL", "description": "Production-ready relational DB"},
-    {"label": "Redis", "description": "In-memory, fast read/write"},
-    {"label": "MongoDB", "description": "Document-based, flexible schema"}
-  ],
-  "multiSelect": false
-}
-```
-
-**If document processing detected:**
-```json
-{
-  "question": "Which document processing libraries are needed?",
-  "header": "File Processing",
-  "options": [
-    {"label": "PyPDF/pdfplumber", "description": "PDF parsing"},
-    {"label": "python-docx", "description": "Word document processing"},
-    {"label": "Unstructured", "description": "Multi-format document loader"},
-    {"label": "Pandas", "description": "CSV/Excel data processing"}
-  ],
-  "multiSelect": true
 }
 ```
 
