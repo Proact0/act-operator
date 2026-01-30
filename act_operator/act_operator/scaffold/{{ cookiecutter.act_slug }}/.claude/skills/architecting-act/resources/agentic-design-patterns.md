@@ -29,8 +29,10 @@ Guide for Step 1a: Determine if AI Agent is needed, and select appropriate Agent
 
 **Structure:** One AI model + tools + system prompt
 
-```
-START → Agent(tools=[tool1, tool2, ...]) → END
+```mermaid
+graph LR
+    START([START]) --> A["AgentNode(tools=[tool1, tool2, ...])"]
+    A --> END([END])
 ```
 
 **Use when:**
@@ -53,8 +55,12 @@ START → Agent(tools=[tool1, tool2, ...]) → END
 
 **Structure:** Agent1 → Agent2 → Agent3 → END
 
-```
-START → DataCollector → Analyzer → ReportWriter → END
+```mermaid
+graph LR
+    START([START]) --> A[DataCollectorNode]
+    A --> B[AnalyzerNode]
+    B --> C[ReportWriterNode]
+    C --> END([END])
 ```
 
 **Use when:**
@@ -73,8 +79,11 @@ START → DataCollector → Analyzer → ReportWriter → END
 
 **Structure:** [Agent1, Agent2, Agent3] execute simultaneously → Synthesize
 
-```
-START → [SentimentAgent, KeywordAgent, CategoryAgent] → Synthesizer → END
+```mermaid
+graph LR
+    START([START]) --> A[SentimentNode] & B[KeywordNode] & C[CategoryNode]
+    A & B & C --> D[SynthesizerNode]
+    D --> END([END])
 ```
 
 **Use when:**
@@ -93,9 +102,12 @@ START → [SentimentAgent, KeywordAgent, CategoryAgent] → Synthesizer → END
 
 **Structure:** Process → Evaluate → (Refine ↺ | Complete)
 
-```
-START → Generator → Evaluator →[needs_refinement]→ Generator
-                            └─[complete]→ END
+```mermaid
+graph LR
+    START([START]) --> A[GeneratorNode]
+    A --> B[EvaluatorNode]
+    B -->|needs_refinement| A
+    B -->|complete| END([END])
 ```
 
 **Use when:**
@@ -119,9 +131,12 @@ START → Generator → Evaluator →[needs_refinement]→ Generator
 
 **Structure:** Generator → Critic → (Revise ↺ | Approve)
 
-```
-START → Generator → Critic →[rejected]→ Generator
-                        └─[approved]→ END
+```mermaid
+graph LR
+    START([START]) --> A[GeneratorNode]
+    A --> B[CriticNode]
+    B -->|rejected| A
+    B -->|approved| END([END])
 ```
 
 **Use when:**
@@ -142,12 +157,14 @@ START → Generator → Critic →[rejected]→ Generator
 
 **Structure:** Cycle with session state across multiple iterations
 
-```
-while (quality < threshold AND iterations < MAX):
-    draft = Generator.create(feedback)
-    evaluation = Critic.evaluate(draft)
-    feedback = evaluation.critique
-    iterations++
+```mermaid
+graph LR
+    START([START]) --> A[GeneratorNode]
+    A --> B[CriticNode]
+    B --> C{MeetsThreshold}
+    C -->|no| D[RefineWithFeedbackNode]
+    D --> A
+    C -->|yes| END([END])
 ```
 
 **Use when:**
@@ -169,11 +186,16 @@ while (quality < threshold AND iterations < MAX):
 
 **Structure:** Central AI analyzes → dispatches to specialists
 
-```
-START → Coordinator →[order_query]→ OrderAgent → Coordinator
-                  └─[returns]→ ReturnsAgent → Coordinator
-                  └─[faq]→ FAQAgent → Coordinator
-                                                → END
+```mermaid
+graph LR
+    START([START]) --> A[CoordinatorNode]
+    A -->|order_query| B[OrderAgentNode]
+    B --> A
+    A -->|returns| C[ReturnsAgentNode]
+    C --> A
+    A -->|faq| D[FAQAgentNode]
+    D --> A
+    A --> END([END])
 ```
 
 **Use when:**
@@ -193,11 +215,13 @@ START → Coordinator →[order_query]→ OrderAgent → Coordinator
 
 **Structure:** Root agent decomposes → delegates to sub-agents
 
-```
-START → RootAgent → [SubAgent1 → SubSubAgent1a, SubSubAgent1b]
-                 → [SubAgent2]
-                 → [SubAgent3]
-                 → Synthesizer → END
+```mermaid
+graph LR
+    START([START]) --> A[RootAgentNode]
+    A --> B[SubAgentsNode]
+    B --> C[SubSubAgentsNode]
+    C --> D[SynthesizerNode]
+    D --> END([END])
 ```
 
 **Use when:**
@@ -219,13 +243,13 @@ START → RootAgent → [SubAgent1 → SubSubAgent1a, SubSubAgent1b]
 
 **Structure:** All-to-all collaboration, iterative debate
 
-```
-┌─────────────────────────────────────┐
-│  Agent1 ←──→ Agent2 ←──→ Agent3    │
-│     ↑          ↑          ↑        │
-│     └──────────┴──────────┘        │
-│         (collaborative debate)      │
-└─────────────────────────────────────┘
+```mermaid
+graph LR
+    subgraph Swarm["Collaborative Debate"]
+        A[Agent1Node] <--> B[Agent2Node]
+        B <--> C[Agent3Node]
+        C <--> A
+    end
 ```
 
 **Use when:**
@@ -247,13 +271,14 @@ START → RootAgent → [SubAgent1 → SubSubAgent1a, SubSubAgent1b]
 
 **Structure:** Thought → Action → Observation loop
 
-```
-while not done:
-    thought = model.reason(observation)
-    action = model.select_action(thought)
-    observation = environment.execute(action)
-    if action == "final_answer":
-        done = True
+```mermaid
+graph LR
+    START([START]) --> A[ReasonNode]
+    A --> B[SelectActionNode]
+    B --> C[ExecuteActionNode]
+    C --> D{IsFinalAnswer}
+    D -->|no| A
+    D -->|yes| END([END])
 ```
 
 **Use when:**
@@ -275,10 +300,14 @@ while not done:
 
 **Structure:** Agent workflow with predefined human checkpoints
 
-```
-START → AutoProcess → [HUMAN_CHECKPOINT] → ContinueProcess → END
-                              ↓
-                    Human reviews/approves/rejects
+```mermaid
+graph LR
+    START([START]) --> A[AutoProcessNode]
+    A --> B{HumanCheckpoint}
+    B -->|approved| C[ContinueProcessNode]
+    C --> END([END])
+    B -->|rejected| A
+    B -.- D[HumanReviewerNode]
 ```
 
 **Use when:**
@@ -307,16 +336,18 @@ START → AutoProcess → [HUMAN_CHECKPOINT] → ContinueProcess → END
 
 **Structure:** Code-based orchestration with complex branching
 
-```python
-if condition_a:
-    result_a = agent_a.run(input)
-    if result_a.confidence > threshold:
-        return process_high_confidence(result_a)
-    else:
-        result_b = agent_b.run(result_a)
-        return merge(result_a, result_b)
-else:
-    return fallback_agent.run(input)
+```mermaid
+graph LR
+    START([START]) --> A{ConditionA}
+    A -->|yes| B[AgentANode]
+    B --> C{ConfidenceCheck}
+    C -->|high| D[HandleResultNode]
+    C -->|low| E[AgentBNode]
+    E --> F[MergeResultsNode]
+    A -->|no:fallback| G[FallbackAgentNode]
+    D --> END([END])
+    F --> END([END])
+    G --> END([END])
 ```
 
 **Use when:**
@@ -393,58 +424,31 @@ else:
 
 ---
 
-## Presentation Template
-
-After analyzing requirements, present recommendation:
-
-```
-"Based on your requirements, I recommend the **[Agentic Pattern]** pattern.
-
-**Why:** [brief justification based on their requirements]
-
-**Key considerations:**
-- [Trade-off 1]
-- [Trade-off 2]
-
-[Simple diagram showing the pattern structure]
-
-Does this pattern fit your needs, or would you prefer a different approach?"
-```
-
-**Wait for confirmation before proceeding to Step 1b or Step 2.**
-
----
-
 ## Quick Reference: Pattern Selection Flowchart
 
-```
-                    Is AI Agent needed?
-                          │
-          ┌───────────────┴───────────────┐
-          ▼                               ▼
-         YES                              NO
-          │                               │
-          ▼                               ▼
-    How many agents?               Use basic patterns
-          │                       (Sequential/Branching/
-    ┌─────┼─────┐                  Cyclic/Multi-agent)
-    ▼     ▼     ▼
-   ONE  2-3   4+
-    │     │     │
-    ▼     ▼     ▼
- Single  Which collaboration?    Complex orchestration?
- Agent        │                        │
-         ┌────┴────┐              ┌────┴────┐
-         ▼         ▼              ▼         ▼
-     Sequential  Parallel    Hierarchical  Swarm
+```mermaid
+flowchart TD
+    A{IsAIAgentNeeded}
+    A -->|YES| B{HowManyAgents}
+    A -->|NO| C[BasicPatternsNode<br/>(Sequential/Branching/<br/>Cyclic/Multi-agent)]
 
-         Need human oversight?
-              │
-         ┌────┴────┐
-         ▼         ▼
-        YES        NO
-         │         │
-         ▼         ▼
-    Human-in-    Continue
-    the-Loop     with pattern
+    B -->|ONE| D[SingleAgentNode]
+    B -->|2-3| E{WhichCollaboration}
+    B -->|4+| F{ComplexOrchestration}
+
+    E --> G[SequentialNode]
+    E --> H[ParallelNode]
+
+    F --> I[HierarchicalNode]
+    F --> J[SwarmNode]
+
+    C --> K{NeedHumanOversight}
+    D --> K
+    G --> K
+    H --> K
+    I --> K
+    J --> K
+
+    K -->|YES| L[HumanInTheLoopNode]
+    K -->|NO| M[ContinuePatternNode]
 ```

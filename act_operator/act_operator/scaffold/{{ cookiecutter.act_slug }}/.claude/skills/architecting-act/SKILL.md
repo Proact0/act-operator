@@ -1,11 +1,11 @@
 ---
 name: architecting-act
-description: Use when starting new Act project (CLAUDE.md doesn't exist), adding cast to existing Act (CLAUDE.md exists), or facing complex cast needing sub-cast extraction (>10 nodes) - guides through interactive questioning (one question at a time) from requirements to validated architecture with mermaid diagrams, emphasizing design before implementation, no code generation
+description: Use when starting new Act project (CLAUDE.md doesn't exist), adding cast to existing Act (CLAUDE.md exists), or facing complex cast needing sub-cast extraction (>10 nodes) - guides through dynamic questioning (context-aware, option-based) from requirements to validated architecture with mermaid diagrams, emphasizing design before implementation, no code generation
 ---
 
 # Architecting {{ cookiecutter.act_name }} Act
 
-Design and manage Act (project) and Cast (graph) architectures through interactive questioning. Outputs `CLAUDE.md` at project root containing Act overview and all Cast specifications.
+Design and manage Act (project) and Cast (graph) architectures through dynamic, context-aware questioning. Outputs `CLAUDE.md` at project root containing Act overview and all Cast specifications.
 
 ## When to Use
 
@@ -24,7 +24,11 @@ Design and manage Act (project) and Cast (graph) architectures through interacti
 
 ## Core Principles
 
-**INTERACTIVE**: Ask ONE question at a time. Wait for response before proceeding.
+**DYNAMIC QUESTIONING**:
+- First analyze context (user request, CLAUDE.md, existing files)
+- Use AskUserQuestion tool for structured option selection
+- Skip questions when answer is inferable from context
+- Group related questions when appropriate (up to 4 at once)
 
 **NO CODE**: Describe structures only. No TypedDict, functions, or implementation code.
 
@@ -48,9 +52,10 @@ Design and manage Act (project) and Cast (graph) architectures through interacti
 
 **Steps:**
 1. **{{ cookiecutter.act_name }} Act Questions** → [modes/initial-design-questions.md](resources/modes/initial-design-questions.md)
-   - Act Purpose, Cast Identification, Cast Goal, Input/Output, Constraints
+   - Analyze context first, then ask only necessary questions using AskUserQuestion
+   - Questions: Act Purpose, Cast Goal, Input/Output, Constraints (skip if inferable)
 2. **{{ cookiecutter.cast_name }} Cast Design** → Follow "Cast Design Workflow" below
-3. **Generate CLAUDE.md files** → Use [act-template.md](resources/act-template.md) and [cast-template.md](resources/cast-template.md)
+3. **Generate CLAUDE.md files** → See "Generating CLAUDE.md" section below
    - Create `/CLAUDE.md` (Act info + Casts table)
    - Create `/casts/{{ cookiecutter.cast_slug }}/CLAUDE.md` (Cast details)
    - Note: Initial cast directory already exists from `act new` command
@@ -67,12 +72,13 @@ Design and manage Act (project) and Cast (graph) architectures through interacti
    - Read `/CLAUDE.md` for Act overview and existing casts
    - Read existing `/casts/*/CLAUDE.md` files as needed for context
 2. **Questions** → [modes/add-cast-questions.md](resources/modes/add-cast-questions.md)
-   - New Cast Purpose, Goal, Relationship, Input/Output, Constraints
+   - Analyze context first, then ask only necessary questions using AskUserQuestion
+   - Questions: New Cast Purpose, Goal, Relationship, Input/Output, Constraints (skip if inferable)
 3. **Cast Design** → Follow "Cast Design Workflow" below
 4. **Create Cast Package** (if not exists) → Run command
    - Run: `uv run act cast -c "{New Cast Name}"`
    - This creates `/casts/{new_cast_slug}/` directory structure
-5. **Update CLAUDE.md files** → Use [act-template.md](resources/act-template.md) and [cast-template.md](resources/cast-template.md)
+5. **Update CLAUDE.md files** → See "Generating CLAUDE.md" section below
    - Update `/CLAUDE.md` Casts table (add new row)
    - Create `/casts/{new_cast_slug}/CLAUDE.md` (new Cast details)
 6. **Validate** → Run validation script
@@ -87,12 +93,13 @@ Design and manage Act (project) and Cast (graph) architectures through interacti
 1. **Analyze** → Use [cast-analysis-guide.md](resources/cast-analysis-guide.md)
    - Read `/casts/{parent_cast}/CLAUDE.md` to analyze complexity
 2. **Questions** → [modes/extract-subcast-questions.md](resources/modes/extract-subcast-questions.md)
-   - Complexity Check, Extraction Proposal, Sub-Cast Purpose, Input/Output
+   - Present analysis first, then use AskUserQuestion for confirmations
+   - Questions: Proceed Confirmation, Node Selection (multiSelect), Sub-Cast Purpose, I/O Verification
 3. **Sub-Cast Design** → Follow "Cast Design Workflow" below
 4. **Create Sub-Cast Package** → Run command
    - Run: `uv run act cast -c "{Sub-Cast Name}"`
    - This creates `/casts/{subcast_slug}/` directory structure
-5. **Update CLAUDE.md files** → Use [act-template.md](resources/act-template.md) and [cast-template.md](resources/cast-template.md)
+5. **Update CLAUDE.md files** → See "Generating CLAUDE.md Files" section below
    - Update `/CLAUDE.md` Casts table (add sub-cast row)
    - Create `/casts/{subcast_slug}/CLAUDE.md` (sub-cast details)
    - Update `/casts/{parent_cast}/CLAUDE.md` (reference sub-cast)
@@ -123,7 +130,20 @@ Design and manage Act (project) and Cast (graph) architectures through interacti
 
 **If ALL are NO** (simple data transformation, deterministic rules) → Proceed to Step 1b.
 
-Ask: "Does your workflow need AI agent capabilities?" Wait for confirmation.
+**AskUserQuestion Format**:
+```json
+{
+  "question": "Does this workflow require AI agent capabilities?",
+  "header": "Agent Need",
+  "options": [
+    {"label": "Yes - Tool/API Access", "description": "External API calls, database queries, etc."},
+    {"label": "Yes - Autonomous Decision", "description": "Dynamic routing, self-correction"},
+    {"label": "Yes - Human Review Needed", "description": "High-stakes decisions, approval process"},
+    {"label": "No", "description": "Simple data transformation, fixed rule-based"}
+  ],
+  "multiSelect": true
+}
+```
 
 #### 1b. Basic Pattern Selection (for non-agentic workflows)
 
@@ -135,7 +155,19 @@ Ask: "Does your workflow need AI agent capabilities?" Wait for confirmation.
 | Multiple handlers | Branching |
 | Refinement loop | Cyclic |
 
-Ask: "Does this pattern fit?" Wait for confirmation.
+**AskUserQuestion Format**:
+```json
+{
+  "question": "Which workflow pattern is appropriate?",
+  "header": "Pattern",
+  "options": [
+    {"label": "Sequential (Recommended)", "description": "Linear transformation, fixed steps"},
+    {"label": "Branching", "description": "Branch processing by input type"},
+    {"label": "Cyclic", "description": "Iterative refinement until quality threshold"}
+  ],
+  "multiSelect": false
+}
+```
 
 ### 2. State Schema
 
@@ -143,7 +175,20 @@ Ask: "Does this pattern fit?" Wait for confirmation.
 
 Present as **TABLES ONLY** (InputState, OutputState, OverallState).
 
-Ask: "Any fields to modify?" Wait for response.
+**AskUserQuestion Format**:
+```json
+{
+  "question": "Any fields to modify in the state schema?",
+  "header": "Schema",
+  "options": [
+    {"label": "Looks good", "description": "Proceed with the proposed schema"},
+    {"label": "Add fields", "description": "I need additional fields"},
+    {"label": "Remove fields", "description": "Some fields are unnecessary"},
+    {"label": "Modify types", "description": "Change field types or constraints"}
+  ],
+  "multiSelect": false
+}
+```
 
 ### 3. Node Specification
 
@@ -161,21 +206,154 @@ Ensure: All nodes connected, all paths reach END, conditionals labeled.
 
 > `langgraph`, `langchain` included. Identify **additional** dependencies only.
 
-**Based on Architecture Diagram, ask ONLY if relevant:**
-- If diagram shows LLM nodes → "Which LLM provider?" → Wait
-- If diagram shows retrieval/search → "Vector store or search tool needed?" → Wait
-- If diagram shows document processing → "Document types to handle?" → Wait
+**Proactive Detection**: Analyze the architecture diagram and node specifications to identify required tech stack categories. Ask questions for ALL detected needs.
 
-**Skip questions** for dependencies not implied by the architecture.
+**Detection Checklist** (check diagram for these patterns):
+| Pattern Detected | Ask About |
+|------------------|-----------|
+| LLM/AI nodes | LLM Provider |
+| RAG, embedding, search | Vector Store |
+| State persistence, history | Database |
+| Web scraping, API calls | HTTP/External Tools |
+| Document parsing | File Processing |
+| Real-time, streaming | Message Queue/Cache |
 
-**YOU determine** packages + environment variables.
+**Use AskUserQuestion for each detected category:**
+
+**If LLM/AI nodes detected:**
+```json
+{
+  "question": "Which LLM provider should be used?",
+  "header": "LLM Provider",
+  "options": [
+    {"label": "OpenAI (Recommended)", "description": "GPT-4, GPT-3.5-turbo"},
+    {"label": "Anthropic", "description": "Claude models"},
+    {"label": "Azure OpenAI", "description": "Azure-hosted OpenAI models"},
+    {"label": "Google", "description": "Gemini models"}
+  ],
+  "multiSelect": false
+}
+```
+
+**If retrieval/search/RAG detected:**
+```json
+{
+  "question": "Which vector store should be used?",
+  "header": "Vector Store",
+  "options": [
+    {"label": "Chroma", "description": "Local, lightweight vector store"},
+    {"label": "Pinecone", "description": "Managed cloud vector database"},
+    {"label": "FAISS", "description": "Facebook AI Similarity Search"},
+    {"label": "Weaviate", "description": "Open-source vector search engine"}
+  ],
+  "multiSelect": false
+}
+```
+
+**If state persistence/history detected:**
+```json
+{
+  "question": "How should state/history be persisted?",
+  "header": "Database",
+  "options": [
+    {"label": "SQLite", "description": "Local file-based, simple setup"},
+    {"label": "PostgreSQL", "description": "Production-ready relational DB"},
+    {"label": "Redis", "description": "In-memory, fast read/write"},
+    {"label": "MongoDB", "description": "Document-based, flexible schema"}
+  ],
+  "multiSelect": false
+}
+```
+
+**If document processing detected:**
+```json
+{
+  "question": "Which document processing libraries are needed?",
+  "header": "File Processing",
+  "options": [
+    {"label": "PyPDF/pdfplumber", "description": "PDF parsing"},
+    {"label": "python-docx", "description": "Word document processing"},
+    {"label": "Unstructured", "description": "Multi-format document loader"},
+    {"label": "Pandas", "description": "CSV/Excel data processing"}
+  ],
+  "multiSelect": true
+}
+```
+
+**Batch questions** when multiple categories detected (up to 4 at once).
+
+**YOU determine** final packages + environment variables based on answers.
 
 ### 6. Validate
 
 ```bash
-python .claude/skills/architecting-act/scripts/validate_architecture.py
+python scripts/validate_architecture.py
 ```
 
-See [validation-checklist.md](resources/validation-checklist.md).
-
 Fix issues if found, then present summary.
+
+{% raw %}---
+
+## Generating CLAUDE.md Files
+
+Generate files using the EXACT template structure. Follow these steps precisely:
+
+1. **Copy template skeleton** - Use template files as the base structure
+2. **Use exact marker format** - See Marker Syntax section below
+3. **Replace placeholders** - Substitute `{{PLACEHOLDER}}` with actual content
+4. **Include all required sections** - Even if content is minimal
+5. **Add MANUAL section** at the end for user notes
+
+### Marker Syntax
+
+**CRITICAL**: Use the EXACT marker format below. Do NOT use variations.
+
+```markdown
+<!-- AUTO-MANAGED: section-name -->
+## Section Heading
+
+Content goes here
+
+<!-- END AUTO-MANAGED -->
+```
+
+For user-editable content:
+
+```markdown
+<!-- MANUAL -->
+## Notes
+
+Add project-specific notes here. This section is never auto-modified.
+
+<!-- END MANUAL -->
+```
+
+**Common mistakes to avoid**:
+- `<!-- BEGIN AUTO-MANAGED: name -->` - WRONG (no BEGIN prefix)
+- `<!-- END AUTO-MANAGED: name -->` - WRONG (no name in closing tag)
+- `<!-- AUTO-MANAGED section-name -->` - WRONG (missing colon)
+
+### Section Definitions
+
+#### Act-Level CLAUDE.md Sections
+
+Generate these sections in order:
+
+| Section Name | Heading | Required | Placeholder | Content |
+|--------------|---------|----------|-------------|---------|
+| `act-overview` | ## Act Overview | Yes | `{{PURPOSE}}`, `{{DOMAIN}}` | Purpose and domain |
+| `casts-table` | ## Casts | Yes | `{{CASTS_TABLE}}` | Table of all casts with links |
+| `project-structure` | ## Project Structure | Yes | `{{ACT_SLUG}}` | Directory tree |
+
+#### Cast-Level CLAUDE.md Sections
+
+Generate these sections in order:
+
+| Section Name | Heading | Required | Placeholder | Content |
+|--------------|---------|----------|-------------|---------|
+| `cast-overview` | ## Overview | Yes | `{{PURPOSE}}`, `{{PATTERN}}`, `{{LATENCY}}` | Purpose, pattern, latency |
+| `architecture-diagram` | ## Architecture Diagram | Yes | `{{MERMAID_DIAGRAM}}` | Mermaid graph definition |
+| `state-schema` | ## State Schema | Yes | `{{*_STATE_FIELDS}}` | InputState, OutputState, OverallState tables |
+| `node-specifications` | ## Node Specifications | Yes | `{{NODE_SPECIFICATIONS}}` | Node details with Responsibility, Reads, Writes |
+| `technology-stack` | ## Technology Stack | Yes | `{{DEPENDENCIES}}`, `{{ENV_VARIABLES}}` | Dependencies and env vars |
+| `cast-structure` | ## Cast Structure | No | `{{CAST_SLUG}}` | Directory tree |{% endraw %}

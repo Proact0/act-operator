@@ -46,14 +46,6 @@
 
 **OverallState:** ALL fields needed by nodes.
 
-## Common Patterns
-
-| Use Case | Input | Output | Internal |
-|----------|-------|--------|----------|
-| Chat | `query: str` | `response: str` | `messages: list` |
-| Document | `document: str` | `result: dict` | `parsed: dict` |
-| Classification | `text: str` | `label: str` | `features: list` |
-
 ## Checklist
 
 - [ ] InputState has only required fields
