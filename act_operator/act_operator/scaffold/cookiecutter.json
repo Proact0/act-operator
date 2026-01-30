@@ -9,6 +9,7 @@
   "language": "en",
   "_copy_without_render": [
     ".claude/skills/architecting-act/scripts",
+    ".claude/skills/architecting-act/templates",
     ".github/workflows"
   ]
 }

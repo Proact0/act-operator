@@ -4,79 +4,167 @@ Use when CLAUDE.md doesn't exist (initial project setup after `act new`).
 
 ---
 
-## Act-Level Questions
+## Context Analysis (Before Asking)
 
-**Ask sequentially - wait for response after each question.**
+**First, analyze available context:**
+1. Read user's initial request for project description
+2. Check cookiecutter template values (act name: {{ cookiecutter.act_name }}, cast name: {{ cookiecutter.cast_name }})
+3. Identify what information is already provided vs. missing
+
+**Decision Matrix:**
+| Information | Source | If Found → Skip Question |
+|-------------|--------|-------------------------|
+| Act Purpose | User request | Q1 |
+| Cast Name | {{ cookiecutter.cast_name }} | Q2 |
+| Cast Goal | User request | Q3 |
+| I/O Types | User request | Q4 |
+
+---
+
+## Questions (Ask Only If Needed)
 
 ### Q1: Act Purpose
-"What does this project do? (one sentence describing the overall goal)"
 
-**Purpose:** Establish project-level context for CLAUDE.md.
+**Condition**:
+- Skip if: User's initial request clearly states project purpose
+- Required when: Purpose unclear or too vague
 
-**Examples:**
-- "Customer support automation system"
-- "Document processing pipeline"
-- "Multi-agent research assistant"
+**AskUserQuestion Format**:
+```json
+{
+  "question": "What is the main purpose of this project?",
+  "header": "Act Purpose",
+  "options": [
+    {"label": "Customer Support Automation", "description": "Handle inquiries, FAQ responses, ticket routing"},
+    {"label": "Document Processing Pipeline", "description": "Parse documents, extract info, generate summaries"},
+    {"label": "Data Analysis/Research", "description": "Collect data, analyze, derive insights"},
+    {"label": "Content Generation", "description": "Auto-generate text, images, code, etc."}
+  ],
+  "multiSelect": false
+}
+```
+
+**Follow-up**: If "Other" selected → Use provided text as Act purpose
 
 ---
 
 ### Q2: Initial Cast Identification
-"I see you created a cast called '{{ cookiecutter.cast_snake }}'. What should this cast accomplish?"
 
-**Purpose:** Understand the first cast's role within the Act.
+**Condition**:
+- Skip if: Cast name already provided by cookiecutter template ({{ cookiecutter.cast_name }})
+- Required when: Clarification needed about cast role
 
-**Examples:**
-- "Handle customer inquiries with RAG"
-- "Process and index documents"
-- "Coordinate research agents"
+**Note**: This question is typically skipped as `act new` already prompts for cast name.
+
+**AskUserQuestion Format** (if clarification needed):
+```json
+{
+  "question": "I see you created a cast called '{{ cookiecutter.cast_name }}'. What should this cast accomplish?",
+  "header": "Cast Role Clarification",
+  "options": [
+    {"label": "Process and transform data", "description": "Take input, apply logic, produce output"},
+    {"label": "Coordinate multiple tasks", "description": "Orchestrate workflow between components"},
+    {"label": "Interface with external systems", "description": "API calls, database operations, integrations"},
+    {"label": "Make decisions/classifications", "description": "Route, categorize, or decide next actions"}
+  ],
+  "multiSelect": false
+}
+```
+
+**Follow-up**: If "Other" selected → Use provided text as Cast role description
 
 ---
-
-## Cast-Level Questions
-
-**Now design the identified cast:**
 
 ### Q3: Cast Goal
-"What should this cast accomplish? (one sentence)"
 
-**Purpose:** Establish cast-level objective clearly.
+**Condition**:
+- Skip if: Cast goal clear from Act purpose and cast name
+- Required when: Multiple possible interpretations exist
 
-**Examples:**
-- "Retrieve context and generate responses to user questions"
-- "Parse documents and create embeddings for vector storage"
-- "Route queries to specialized agents based on intent"
+**AskUserQuestion Format**:
+```json
+{
+  "question": "What is the main goal of {{ cookiecutter.cast_name }} Cast?",
+  "header": "Cast Goal",
+  "options": [
+    {"label": "Data Collection/Ingestion", "description": "Fetch and process data from external sources"},
+    {"label": "Analysis/Processing", "description": "Analyze and transform input data"},
+    {"label": "Generation/Output", "description": "Create new content or results"},
+    {"label": "Routing/Coordination", "description": "Classify input and dispatch to appropriate handlers"}
+  ],
+  "multiSelect": false
+}
+```
+
+**Follow-up**: If "Other" selected → Use provided text as Cast goal
 
 ---
 
-### Q4: Input/Output
-"What goes in and what comes out?
-- **Input:** (e.g., user query, document)
-- **Output:** (e.g., generated text, classification)"
+### Q4: Input/Output Types
 
-**Purpose:** Define data boundaries.
+**Condition**:
+- Skip if: I/O types inferable from cast goal
+- Required when: Custom or complex I/O needed
 
-**Examples:**
-- Input: User question (str) | Output: Contextual response (str)
-- Input: Raw document (str) | Output: Vector embeddings (list)
-- Input: User query (str) | Output: Agent routing decision (str)
+**AskUserQuestion Format** (ask as two separate questions):
+
+**Input Type:**
+```json
+{
+  "question": "What is the input data type?",
+  "header": "Input Type",
+  "options": [
+    {"label": "Text (str)", "description": "User questions, document content, etc."},
+    {"label": "File/Document", "description": "PDF, Word, images, etc."},
+    {"label": "Structured Data", "description": "JSON, dict, database records"},
+    {"label": "Multimedia", "description": "Images, audio, video"}
+  ],
+  "multiSelect": true
+}
+```
+
+**Output Type:**
+```json
+{
+  "question": "What is the output data type?",
+  "header": "Output Type",
+  "options": [
+    {"label": "Text Response", "description": "Generated text, summaries, answers"},
+    {"label": "Structured Result", "description": "JSON, classification, metadata"},
+    {"label": "File/Document", "description": "Generated documents, reports"},
+    {"label": "Action/Command", "description": "Tasks to execute, API call results"}
+  ],
+  "multiSelect": true
+}
+```
+
+**Note**: These can be asked together (up to 4 questions at once with AskUserQuestion).
 
 ---
 
 ### Q5: Constraints
-"Any constraints?
-- A) Low latency (<10s)
-- B) Normal (<60s)
-- C) Long-running (>60s)
-- D) Other?"
 
-**Purpose:** Identify performance requirements.
+**Condition**:
+- Always ask: Performance constraints affect architecture decisions
 
-**Follow-up if D:**
-- "What specific constraints?" (e.g., token limits, cost, accuracy requirements)
+**AskUserQuestion Format**:
+```json
+{
+  "question": "Are there any performance constraints?",
+  "header": "Constraints",
+  "options": [
+    {"label": "Low Latency (<10s)", "description": "Real-time response needed, user waiting"},
+    {"label": "Normal (<60s)", "description": "Moderate response time, batch allowed"},
+    {"label": "Long-running (>60s)", "description": "Complex processing, background jobs"},
+    {"label": "Cost Optimization", "description": "Minimize API calls, prefer cheaper models"}
+  ],
+  "multiSelect": true
+}
+```
 
 ---
 
-## After Q5: Summarize
+## After Questions: Summarize
 
 **Template:**
 ```
