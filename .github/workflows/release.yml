@@ -1,123 +1,230 @@
 name: Release
-run-name: Release act_operator by @${{ github.actor }}
+run-name: Release act-operator v${{ github.run_number }} by @${{ github.actor }}
+
 on:
   workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Dry run (skip PyPI publish)"
+        type: boolean
+        default: false
 
 env:
   PYTHON_VERSION: "3.11"
   WORKING_DIRECTORY: "act_operator"
+  PKG_NAME: "act-operator"
 
 jobs:
   build:
+    name: Build distribution 📦
     runs-on: ubuntu-latest
 
     outputs:
-      pkg-name: ${{ steps.check-version.outputs.pkg-name }}
       version: ${{ steps.check-version.outputs.version }}
       tag: ${{ steps.check-version.outputs.tag }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Set up Python
-        uses: astral-sh/setup-uv@v7
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           enable-cache: true
-          cache-suffix: "release"
+
+      - name: Extract version
+        id: check-version
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          VERSION=$(grep -m 1 '^__version__' act_operator/__init__.py | cut -d '"' -f 2)
+          TAG="v${VERSION}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "📦 Building ${{ env.PKG_NAME }} v$VERSION"
+
+      - name: Check if tag already exists
+        run: |
+          TAG="${{ steps.check-version.outputs.tag }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "❌ Tag $TAG already exists!"
+            echo "Please bump version in act_operator/__init__.py"
+            exit 1
+          fi
+          echo "✅ Tag $TAG is available"
 
       - name: Build distribution
         run: uv build
         working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      - name: Verify package
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          uv pip install --system twine
+          twine check dist/*
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist
           path: ${{ env.WORKING_DIRECTORY }}/dist/
-
-      - name: Check Version
-        id: check-version
-        shell: bash
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          PKG_NAME=$(grep -m 1 "^name = " pyproject.toml | cut -d '"' -f 2)
-          if grep -q 'dynamic.*=.*\[.*"version".*\]' pyproject.toml; then
-            VERSION=$(grep -m 1 '^__version__' act_operator/__init__.py | cut -d '"' -f 2)
-          else
-            VERSION=$(grep -m 1 "^version = " pyproject.toml | cut -d '"' -f 2)
-          fi
-          TAG="v${VERSION}"
-          echo pkg-name="$PKG_NAME" >> $GITHUB_OUTPUT
-          echo version="$VERSION" >> $GITHUB_OUTPUT
-          echo tag="$TAG" >> $GITHUB_OUTPUT
+          retention-days: 7
 
   publish:
-    needs:
-      - build
+    name: Publish to PyPI 🚀
+    needs: build
+    if: ${{ !inputs.dry-run }}
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/${{ env.PKG_NAME }}
     permissions:
-      contents: read
-      id-token: write
+      id-token: write  # Required for trusted publishing
 
     steps:
-      - uses: actions/checkout@v5
-
-      - name: Set up Python
-        uses: astral-sh/setup-uv@v7
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          enable-cache: true
-          cache-suffix: "release"
-
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v4
         with:
           name: dist
-          path: ${{ env.WORKING_DIRECTORY }}/dist/
+          path: dist/
 
-      - name: Publish to PyPI (trusted publishing)
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: ${{ env.WORKING_DIRECTORY }}/dist/
           verbose: true
           print-hash: true
-          attestations: false
 
-  create-release:
+  github-release:
+    name: Create GitHub Release 🏷️
     needs:
       - build
       - publish
+    if: ${{ !inputs.dry-run && !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
 
       - name: Generate release notes
-        id: generate-release-body
-        shell: bash
+        id: release-notes
+        env:
+          TAG: ${{ needs.build.outputs.tag }}
+          VERSION: ${{ needs.build.outputs.version }}
         run: |
-          REGEX="^v[0-9]+\.[0-9]+\.[0-9]+((a|b|rc)[0-9]+)?$"
-          PREV_TAG=$(git tag --sort=-creatordate | grep -P "$REGEX" | head -1 || echo "")
+          # Find previous release tag (exclude current tag)
+          PREV_TAG=$(git tag --sort=-v:refname | grep -P "^v[0-9]+\.[0-9]+\.[0-9]+$" | grep -v "^$TAG$" | head -1 || echo "")
+
           {
-            echo 'release-body<<EOF'
-            if [ -z "$PREV_TAG" ]; then
-              echo "Initial release"
-            else
-              echo "Changes since $PREV_TAG"
+            echo 'body<<EOF'
+            echo "## ${{ env.PKG_NAME }} v$VERSION"
+            echo
+            echo "### 📝 Changes since $PREV_TAG"
+            echo
+
+            # Get commits since last tag
+            COMMITS=$(git log --format="- %s" "$PREV_TAG"..HEAD -- . 2>/dev/null | grep -vE "^- (Merge|merge)" || true)
+
+            # Categorize by conventional commits
+            FEAT=$(echo "$COMMITS" | grep -E "^- feat" || true)
+            FIX=$(echo "$COMMITS" | grep -E "^- fix" || true)
+            DOCS=$(echo "$COMMITS" | grep -E "^- docs" || true)
+            CHORE=$(echo "$COMMITS" | grep -E "^- (chore|ci|build|refactor)" || true)
+            OTHER=$(echo "$COMMITS" | grep -vE "^- (feat|fix|docs|chore|ci|build|refactor)" | head -10 || true)
+
+            if [ -n "$FEAT" ]; then
+              echo "#### ✨ New Features"
+              echo "$FEAT"
               echo
-              git log --format="%s" "$PREV_TAG"..HEAD -- $WORKING_DIRECTORY | awk '{print "* " $0}'
             fi
+
+            if [ -n "$FIX" ]; then
+              echo "#### 🐛 Bug Fixes"
+              echo "$FIX"
+              echo
+            fi
+
+            if [ -n "$DOCS" ]; then
+              echo "#### 📚 Documentation"
+              echo "$DOCS"
+              echo
+            fi
+
+            if [ -n "$CHORE" ]; then
+              echo "#### 🔧 Maintenance"
+              echo "$CHORE"
+              echo
+            fi
+
+            if [ -n "$OTHER" ]; then
+              echo "#### 📝 Other"
+              echo "$OTHER"
+              echo
+            fi
+
+            # If no commits found
+            if [ -z "$FEAT$FIX$DOCS$CHORE$OTHER" ]; then
+              echo "- Minor improvements and updates"
+              echo
+            fi
+
+            echo "---"
+            echo
+            echo "### 🔗 Links"
+            echo
+            echo "- [📦 PyPI](https://pypi.org/project/${{ env.PKG_NAME }}/$VERSION/)"
+            echo "- [📖 Documentation](https://github.com/${{ github.repository }}#readme)"
+            echo "- [📋 Full Changelog](https://github.com/${{ github.repository }}/compare/$PREV_TAG...$TAG)"
             echo EOF
           } >> "$GITHUB_OUTPUT"
 
-      - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
-          artifacts: "${{ env.WORKING_DIRECTORY }}/dist/*"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          generateReleaseNotes: false
-          tag: ${{ needs.build.outputs.tag }}
-          body: ${{ steps.generate-release-body.outputs.release-body }}
-          commit: ${{ github.sha }}
+          tag_name: ${{ needs.build.outputs.tag }}
+          name: v${{ needs.build.outputs.version }}
+          body: ${{ steps.release-notes.outputs.body }}
+          draft: false
+          prerelease: ${{ contains(needs.build.outputs.version, 'a') || contains(needs.build.outputs.version, 'b') || contains(needs.build.outputs.version, 'rc') }}
+          files: dist/*
+          fail_on_unmatched_files: true
+
+  # Dry run summary (only when dry-run is enabled)
+  dry-run-summary:
+    name: Dry Run Summary 🧪
+    needs: build
+    if: ${{ inputs.dry-run }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Summary
+        env:
+          VERSION: ${{ needs.build.outputs.version }}
+          TAG: ${{ needs.build.outputs.tag }}
+        run: |
+          echo "## 🧪 Dry Run Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Package Info" >> $GITHUB_STEP_SUMMARY
+          echo "- **Name**: ${{ env.PKG_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: $VERSION" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: $TAG" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Built Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          ls -la dist/ >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Ready to publish! Run again without dry-run to release." >> $GITHUB_STEP_SUMMARY
