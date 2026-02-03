@@ -1,6 +1,6 @@
 ---
 name: engineering-act
-description: Use when creating new cast package, installing/managing dependencies (monorepo or cast-level), resolving dependency conflicts or packages out of sync, or launching langgraph dev server - checks CLAUDE.md first for context, then handles all uv-based project setup and package management (dev/test/lint groups)
+description: Manages Act project setup and uv-based package management for monorepo and cast-level dependencies. Use when creating cast package, adding dependencies, resolving package conflicts, syncing environment, or ask "add package", "install dependency", "run dev server".
 ---
 
 # Engineering {{ cookiecutter.act_name }} Act
@@ -25,10 +25,10 @@ Manage {{ cookiecutter.act_name }} Act project setup, dependencies, and cast sca
 
 | Task | Resource |
 |------|----------|
-| Create new cast(package) | `resources/create-cast.md` |
-| Add act(monorepo) dependency | `resources/add-dep-act.md` |
-| Add cast(package) dependency | `resources/add-dep-cast.md` |
-| Sync environment | `resources/sync.md` |
+| Create new cast(package) | `./resources/create-cast.md` |
+| Add act(monorepo) dependency | `./resources/add-dep-act.md` |
+| Add cast(package) dependency | `./resources/add-dep-cast.md` |
+| Sync environment | `./resources/sync.md` |
 
 ## Quick Reference
 

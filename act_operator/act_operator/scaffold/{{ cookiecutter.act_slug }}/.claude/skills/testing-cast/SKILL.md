@@ -1,6 +1,6 @@
 ---
 name: testing-cast
-description: Use when writing pytest for cast nodes or casts(graphs), need mocking strategies for LLM/API/Store calls, setting up test fixtures, or organizing sync/async test suites - provides comprehensive patterns for effective cast verification
+description: Guides pytest test writing for LangGraph casts with mocking patterns for LLM/API/Store calls. Use when writing tests, need mock strategies, setting up fixtures, testing nodes/graphs, or ask "write tests", "mock LLM", "test coverage".
 ---
 
 # Testing Cast Skill
@@ -32,11 +32,11 @@ uv run pytest --cov=casts --cov-report=html
 
 | Task | Resource |
 |------|----------|
-| Test nodes (sync/async) | `resources/testing-nodes.md` |
-| Test graphs | `resources/testing-graphs.md` |
-| Mock LLMs, APIs, Store | `resources/mocking.md` |
-| Reusable fixtures | `resources/fixtures.md` |
-| Coverage strategies | `resources/coverage.md` |
+| Test nodes (sync/async) | `./resources/testing-nodes.md` |
+| Test graphs | `./resources/testing-graphs.md` |
+| Mock LLMs, APIs, Store | `./resources/mocking.md` |
+| Reusable fixtures | `./resources/fixtures.md` |
+| Coverage strategies | `./resources/coverage.md` |
 
 ## Test Patterns
 
