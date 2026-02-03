@@ -33,74 +33,74 @@
 **Referenced Resources in Component Reference Tables:**
 
 **Core Components:**
-- ✅ `usage/core/state.md` - EXISTS
-- ✅ `usage/core/node.md` - EXISTS
-- ✅ `usage/core/edge.md` - EXISTS
-- ✅ `usage/core/graph.md` - EXISTS
-- ✅ `usage/core/subgraph.md` - EXISTS
+- ✅ `/core/state.md` - EXISTS
+- ✅ `/core/node.md` - EXISTS
+- ✅ `/core/edge.md` - EXISTS
+- ✅ `/core/graph.md` - EXISTS
+- ✅ `/core/subgraph.md` - EXISTS
 
 **Prompts & Messages:**
-- ✅ `usage/prompts/message-types.md` - EXISTS
-- ✅ `usage/prompts/multimodal.md` - EXISTS
-- ❓ `usage/prompts/messages.md` - Check if referenced (found in .venv)
-- ❓ `usage/prompts/multi-modal.md` - Check vs multimodal.md (duplicate?)
+- ✅ `/prompts/message-types.md` - EXISTS
+- ✅ `/prompts/multimodal.md` - EXISTS
+- ❓ `/prompts/messages.md` - Check if referenced (found in .venv)
+- ❓ `/prompts/multi-modal.md` - Check vs multimodal.md (duplicate?)
 
 **Models & Agents:**
-- ✅ `usage/models/select-chat-models.md` - EXISTS
-- ✅ `usage/models/standalone-model.md` - EXISTS
-- ✅ `usage/models/structured-output.md` - EXISTS
-- ✅ `usage/agents/configuration.md` - EXISTS
-- ✅ `usage/agents/structured-output.md` - EXISTS
+- ✅ `/models/select-chat-models.md` - EXISTS
+- ✅ `/models/standalone-model.md` - EXISTS
+- ✅ `/models/structured-output.md` - EXISTS
+- ✅ `/agents/configuration.md` - EXISTS
+- ✅ `/agents/structured-output.md` - EXISTS
 
 **Tools:**
-- ✅ `usage/tools/basic-tool.md` - EXISTS
-- ✅ `usage/tools/tool-with-complex-inputs.md` - EXISTS
-- ✅ `usage/tools/access-context.md` - EXISTS
+- ✅ `/tools/basic-tool.md` - EXISTS
+- ✅ `/tools/tool-with-complex-inputs.md` - EXISTS
+- ✅ `/tools/access-context.md` - EXISTS
 
 **Memory:**
-- ✅ `usage/memory/short-term/add-to-agent.md` - EXISTS
-- ✅ `usage/memory/short-term/customize-agent-memory.md` - EXISTS
-- ✅ `usage/memory/short-term/manage-conversations.md` - EXISTS
-- ✅ `usage/memory/short-term/access-and-modify-memory.md` - EXISTS
-- ✅ `usage/memory/long-term/memory-storage.md` - EXISTS
-- ✅ `usage/memory/long-term/in-tools.md` - EXISTS
+- ✅ `/memory/short-term/add-to-agent.md` - EXISTS
+- ✅ `/memory/short-term/customize-agent-memory.md` - EXISTS
+- ✅ `/memory/short-term/manage-conversations.md` - EXISTS
+- ✅ `/memory/short-term/access-and-modify-memory.md` - EXISTS
+- ✅ `/memory/long-term/memory-storage.md` - EXISTS
+- ✅ `/memory/long-term/in-tools.md` - EXISTS
 
 **Middleware - Reliability:**
-- ✅ `usage/middlewares/provider-agnostic/model-retry.md` - EXISTS
-- ✅ `usage/middlewares/provider-agnostic/tool-retry.md` - EXISTS
-- ✅ `usage/middlewares/provider-agnostic/model-fallback.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/model-retry.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/tool-retry.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/model-fallback.md` - EXISTS
 
 **Middleware - Safety & Control:**
-- ✅ `usage/middlewares/provider-agnostic/guardrails.md` - EXISTS
-- ✅ `usage/middlewares/provider-agnostic/model-call-limit.md` - EXISTS
-- ✅ `usage/middlewares/provider-agnostic/tool-call-limit.md` - EXISTS
-- ✅ `usage/middlewares/provider-agnostic/human-in-the-loop.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/guardrails.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/model-call-limit.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/tool-call-limit.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/human-in-the-loop.md` - EXISTS
 
 **Middleware - Tool Management:**
-- ✅ `usage/middlewares/provider-agnostic/llm-tool-selector.md` - EXISTS
-- ✅ `usage/middlewares/provider-agnostic/llm-tool-emulator.md` - EXISTS
-- ✅ `usage/middlewares/provider-agnostic/shell-tool.md` - EXISTS
-- ✅ `usage/middlewares/provider-agnostic/file-search.md` - EXISTS
-- ✅ `usage/middlewares/provider-agnostic/to-do-list.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/llm-tool-selector.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/llm-tool-emulator.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/shell-tool.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/file-search.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/to-do-list.md` - EXISTS
 
 **Middleware - Context:**
-- ✅ `usage/middlewares/provider-agnostic/context-editing.md` - EXISTS
-- ✅ `usage/middlewares/provider-agnostic/summarization.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/context-editing.md` - EXISTS
+- ✅ `/middlewares/provider-agnostic/summarization.md` - EXISTS
 
 **Middleware - Provider-Specific:**
-- ✅ `usage/middlewares/provider-specific/openai.md` - EXISTS
-- ✅ `usage/middlewares/provider-specific/anthropic.md` - EXISTS
-- ✅ `usage/middlewares/custom.md` - EXISTS
+- ✅ `/middlewares/provider-specific/openai.md` - EXISTS
+- ✅ `/middlewares/provider-specific/anthropic.md` - EXISTS
+- ✅ `/middlewares/custom.md` - EXISTS
 
 **Integrations:**
-- ✅ `usage/integrations/embedding.md` - EXISTS
-- ✅ `usage/integrations/vector-stores.md` - EXISTS
-- ✅ `usage/integrations/text-spliter.md` - EXISTS
+- ✅ `/integrations/embedding.md` - EXISTS
+- ✅ `/integrations/vector-stores.md` - EXISTS
+- ✅ `/integrations/text-spliter.md` - EXISTS
 
 **Deleted Files (from git status):**
 - ❌ `analysis-architecture.md` - DELETED
-- ❌ `usage/prompts/messages.md` - Check if used (exists in .venv)
-- ❌ `usage/prompts/multi-modal.md` - vs multimodal.md?
+- ❌ `/prompts/messages.md` - Check if used (exists in .venv)
+- ❌ `/prompts/multi-modal.md` - vs multimodal.md?
 
 **Potential Issues:**
 - ⚠️ Line 88: References `prompts/message-types.md` but deleted `prompts/messages.md` exists in .venv
