@@ -1,6 +1,6 @@
 ---
 name: architecting-act
-description: Use when starting new Act project (CLAUDE.md doesn't exist), adding cast to existing Act (CLAUDE.md exists), or facing complex cast needing sub-cast extraction (>10 nodes) - guides through dynamic questioning (context-aware, option-based) from requirements to validated architecture with mermaid diagrams, emphasizing design before implementation, no code generation
+description: Designs Act and Cast architectures through dynamic questioning, outputting validated CLAUDE.md with mermaid diagrams. Use when starting new Act project, adding cast, planning architecture, extracting sub-cast (10+ nodes), or ask "design architecture", "plan cast", "create CLAUDE.md".
 ---
 
 # Architecting {{ cookiecutter.act_name }} Act
@@ -51,7 +51,7 @@ Design and manage Act (project) and Cast (graph) architectures through dynamic, 
 **When:** First time designing (no CLAUDE.md)
 
 **Steps:**
-1. **{{ cookiecutter.act_name }} Act Questions** → [modes/initial-design-questions.md](resources/modes/initial-design-questions.md)
+1. **{{ cookiecutter.act_name }} Act Questions** → [modes/initial-design-questions.md](./resources/modes/initial-design-questions.md)
    - Analyze context first, then ask only necessary questions using AskUserQuestion
    - Questions: Act Purpose, Cast Goal, Input/Output, Constraints (skip if inferable)
 2. **{{ cookiecutter.cast_name }} Cast Design** → Follow "Cast Design Workflow" below
@@ -71,7 +71,7 @@ Design and manage Act (project) and Cast (graph) architectures through dynamic, 
 1. **Read CLAUDE.md** → Understand existing {{ cookiecutter.act_name }} Act and Casts
    - Read `/CLAUDE.md` for Act overview and existing casts
    - Read existing `/casts/*/CLAUDE.md` files as needed for context
-2. **Questions** → [modes/add-cast-questions.md](resources/modes/add-cast-questions.md)
+2. **Questions** → [modes/add-cast-questions.md](./resources/modes/add-cast-questions.md)
    - Analyze context first, then ask only necessary questions using AskUserQuestion
    - Questions: New Cast Purpose, Goal, Relationship, Input/Output, Constraints (skip if inferable)
 3. **Cast Design** → Follow "Cast Design Workflow" below
@@ -90,9 +90,9 @@ Design and manage Act (project) and Cast (graph) architectures through dynamic, 
 **When:** Cast has >10 nodes or complexity mentioned
 
 **Steps:**
-1. **Analyze** → Use [cast-analysis-guide.md](resources/cast-analysis-guide.md)
+1. **Analyze** → Use [cast-analysis-guide.md](./resources/cast-analysis-guide.md)
    - Read `/casts/{parent_cast}/CLAUDE.md` to analyze complexity
-2. **Questions** → [modes/extract-subcast-questions.md](resources/modes/extract-subcast-questions.md)
+2. **Questions** → [modes/extract-subcast-questions.md](./resources/modes/extract-subcast-questions.md)
    - Present analysis first, then use AskUserQuestion for confirmations
    - Questions: Proceed Confirmation, Node Selection (multiSelect), Sub-Cast Purpose, I/O Verification
 3. **Sub-Cast Design** → Follow "Cast Design Workflow" below
@@ -126,7 +126,7 @@ Design and manage Act (project) and Cast (graph) architectures through dynamic, 
 | Human oversight checkpoints | Yes |
 | Multiple specialized AI roles | Yes |
 
-**If ANY indicator applies** → Use [agentic-design-patterns.md](resources/agentic-design-patterns.md) to select Agentic Pattern.
+**If ANY indicator applies** → Use [agentic-design-patterns.md](./resources/agentic-design-patterns.md) to select Agentic Pattern.
 
 **If ALL are NO** (simple data transformation, deterministic rules) → Proceed to Step 1b.
 
@@ -147,7 +147,7 @@ Design and manage Act (project) and Cast (graph) architectures through dynamic, 
 
 #### 1b. Basic Pattern Selection (for non-agentic workflows)
 
-**YOU suggest pattern** using [pattern-decision-matrix.md](resources/pattern-decision-matrix.md):
+**YOU suggest pattern** using [pattern-decision-matrix.md](./resources/pattern-decision-matrix.md):
 
 | Requirements | Pattern |
 |-------------|---------|
@@ -171,7 +171,7 @@ Design and manage Act (project) and Cast (graph) architectures through dynamic, 
 
 ### 2. State Schema
 
-**YOU design schema** using [state-schema.md](resources/design/state-schema.md).
+**YOU design schema** using [state-schema.md](./resources/design/state-schema.md).
 
 Present as **TABLES ONLY** (InputState, OutputState, OverallState).
 
@@ -192,13 +192,13 @@ Present as **TABLES ONLY** (InputState, OutputState, OverallState).
 
 ### 3. Node Specification
 
-**Ask pattern-specific question** using [node-specification.md](resources/design/node-specification.md):
+**Ask pattern-specific question** using [node-specification.md](./resources/design/node-specification.md):
 
 **YOU design nodes** (single responsibility, CamelCase naming).
 
 ### 4. Architecture Diagram
 
-**YOU create Mermaid diagram** using [edge-routing.md](resources/design/edge-routing.md).
+**YOU create Mermaid diagram** using [edge-routing.md](./resources/design/edge-routing.md).
 
 Ensure: All nodes connected, all paths reach END, conditionals labeled.
 
@@ -235,7 +235,7 @@ Ensure: All nodes connected, all paths reach END, conditionals labeled.
 ### 6. Validate
 
 ```bash
-python scripts/validate_architecture.py
+python ./scripts/validate_architecture.py
 ```
 
 Fix issues if found, then present summary.
