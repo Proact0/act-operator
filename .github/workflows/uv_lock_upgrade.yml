@@ -58,7 +58,7 @@ jobs:
           body: |
             ## 📦 Dependency Updates
 
-            This PR updates the dependencies in Act-Operator using `uv lock --upgrade`.
+            This PR updates the dependencies in act-operator using `uv lock --upgrade`.
 
             ### Changed Files
             - `act_operator/uv.lock`
@@ -77,6 +77,8 @@ jobs:
           labels: |
             dependencies
             automated
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
 
       - name: No updates needed
         if: steps.check_changes.outputs.has_changes == 'false'
