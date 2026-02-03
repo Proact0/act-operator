@@ -10,8 +10,11 @@ on:
         default: false
 
 env:
+  # Match pyproject.toml: requires-python = ">=3.11"
   PYTHON_VERSION: "3.11"
+  # Directory containing pyproject.toml (act_operator/)
   WORKING_DIRECTORY: "act_operator"
+  # Match pyproject.toml: name = "act-operator"
   PKG_NAME: "act-operator"
 
 jobs:
@@ -60,9 +63,7 @@ jobs:
 
       - name: Verify package
         working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          uv pip install --system twine
-          twine check dist/*
+        run: uvx twine check dist/*
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -91,6 +92,7 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          packages-dir: dist/
           verbose: true
           print-hash: true
 
@@ -120,12 +122,14 @@ jobs:
           TAG: ${{ needs.build.outputs.tag }}
           VERSION: ${{ needs.build.outputs.version }}
         run: |
-          # Find previous release tag (exclude current tag)
-          PREV_TAG=$(git tag --sort=-v:refname | grep -P "^v[0-9]+\.[0-9]+\.[0-9]+$" | grep -v "^$TAG$" | head -1 || echo "")
+          # Find previous release tag (exclude current); allow pre-release (a/b/rc) per pyproject dynamic version
+          PREV_TAG=$(git tag --sort=-v:refname | grep -P "^v[0-9]+\.[0-9]+\.[0-9]+((a|b|rc)[0-9]+)?$" | grep -v "^$TAG$" | head -1 || echo "")
 
           {
             echo 'body<<EOF'
             echo "## ${{ env.PKG_NAME }} v$VERSION"
+            echo
+            echo "Proact0's CLI for bootstrapping LangGraph-based \"Act - AX Template\" blueprints."
             echo
             echo "### 📝 Changes since $PREV_TAG"
             echo
@@ -181,8 +185,10 @@ jobs:
             echo "### 🔗 Links"
             echo
             echo "- [📦 PyPI](https://pypi.org/project/${{ env.PKG_NAME }}/$VERSION/)"
-            echo "- [📖 Documentation](https://github.com/${{ github.repository }}#readme)"
-            echo "- [📋 Full Changelog](https://github.com/${{ github.repository }}/compare/$PREV_TAG...$TAG)"
+            echo "- [📖 Repository](https://github.com/${{ github.repository }})"
+            if [ -n "$PREV_TAG" ]; then
+              echo "- [📋 Full Changelog](https://github.com/${{ github.repository }}/compare/$PREV_TAG...$TAG)"
+            fi
             echo EOF
           } >> "$GITHUB_OUTPUT"
 
