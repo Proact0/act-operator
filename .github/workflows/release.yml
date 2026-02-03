@@ -127,11 +127,7 @@ jobs:
 
           {
             echo 'body<<EOF'
-            echo "## ${{ env.PKG_NAME }} v$VERSION"
-            echo
-            echo "Proact0's CLI for bootstrapping LangGraph-based \"Act - AX Template\" blueprints."
-            echo
-            echo "### 📝 Changes since $PREV_TAG"
+            echo "### 📝 Release Note"
             echo
 
             # Get commits since last tag
