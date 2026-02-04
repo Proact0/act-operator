@@ -1,6 +1,8 @@
 ---
 name: architecting-act
 description: Designs Act and Cast architectures through dynamic questioning, outputting validated CLAUDE.md with mermaid diagrams. Use when starting new Act project, adding cast, planning architecture, extracting sub-cast (10+ nodes), or ask "design architecture", "plan cast", "create CLAUDE.md".
+version: "2026.02.03"
+author: Proact0
 allowed-tools:
   - Bash(uv run act cast *)
   - Bash(python *)

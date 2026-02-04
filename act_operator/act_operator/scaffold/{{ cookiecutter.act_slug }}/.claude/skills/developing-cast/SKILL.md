@@ -1,6 +1,8 @@
 ---
 name: developing-cast
 description: Implements LangGraph cast components following systematic workflow (state, deps, nodes, conditions, graph). Use when implementing cast, building nodes/agents/tools, need LangGraph patterns (memory, retry, guardrails, vector stores), or ask "implement cast", "build graph", "add node".
+version: "2026.02.04"
+author: Proact0
 allowed-tools:
   - Bash(uv sync *)
   - Bash(uv add --package *)
