@@ -1,6 +1,10 @@
 ---
 name: developing-cast
 description: Implements LangGraph cast components following systematic workflow (state, deps, nodes, conditions, graph). Use when implementing cast, building nodes/agents/tools, need LangGraph patterns (memory, retry, guardrails, vector stores), or ask "implement cast", "build graph", "add node".
+allowed-tools:
+  - Bash(uv run sync *)
+  - Write
+  - Edit
 ---
 # Developing {{ cookiecutter.act_name }}'s Cast
 
