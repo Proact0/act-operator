@@ -1,6 +1,13 @@
 ---
 name: architecting-act
 description: Designs Act and Cast architectures through dynamic questioning, outputting validated CLAUDE.md with mermaid diagrams. Use when starting new Act project, adding cast, planning architecture, extracting sub-cast (10+ nodes), or ask "design architecture", "plan cast", "create CLAUDE.md".
+allowed-tools:
+  - Bash(uv run act cast *)
+  - Bash(python *)
+  - Read
+  - Write
+  - Edit
+  - AskUserQuestion
 ---
 
 # Architecting {{ cookiecutter.act_name }} Act
