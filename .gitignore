@@ -155,4 +155,6 @@ sample-act/
 *.bak
 
 # Claude
-settings.local.json
+.claude
+.claude-flow
+.mcp.json
