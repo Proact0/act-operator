@@ -301,6 +301,7 @@ Generate these sections in order:
 | `act-overview` | ## Act Overview | Yes | `{{PURPOSE}}`, `{{DOMAIN}}` | Purpose and domain |
 | `casts-table` | ## Casts | Yes | `{{CASTS_TABLE}}` | Table of all casts with links |
 | `project-structure` | ## Project Structure | Yes | `{{ACT_SLUG}}` | Directory tree |
+| `development-commands` | ## Development Commands | Yes | — | Dev server, sync, create cast, add dependency |
 
 #### Cast-Level CLAUDE.md Sections
 
@@ -313,4 +314,5 @@ Generate these sections in order:
 | `state-schema` | ## State Schema | Yes | `{{*_STATE_FIELDS}}` | InputState, OutputState, OverallState tables |
 | `node-specifications` | ## Node Specifications | Yes | `{{NODE_SPECIFICATIONS}}` | Node details with Responsibility, Reads, Writes |
 | `technology-stack` | ## Technology Stack | Yes | `{{DEPENDENCIES}}`, `{{ENV_VARIABLES}}` | Dependencies and env vars |
-| `cast-structure` | ## Cast Structure | No | `{{CAST_SLUG}}` | Directory tree |{% endraw %}
+| `cast-structure` | ## Cast Structure | No | `{{CAST_SLUG}}` | Directory tree |
+| `development-commands` | ## Development Commands | Yes | `{{CAST_SLUG}}` | Cast-specific dependency commands |{% endraw %}

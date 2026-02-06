@@ -5,10 +5,14 @@ version: "2026.02.04"
 author: Proact0
 allowed-tools:
   - Bash(uv sync *)
+  - Bash(uv add --dev *)
+  - Bash(uv add --group *)
   - Bash(uv add --package *)
+  - Bash(uv remove --package *)
   - Read
   - Write
   - Edit
+  - AskUserQuestion
 ---
 # Developing {{ cookiecutter.act_name }}'s Cast
 
