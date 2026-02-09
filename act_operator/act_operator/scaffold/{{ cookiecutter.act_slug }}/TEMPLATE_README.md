@@ -171,9 +171,8 @@ Agent Skills are folders of instructions that enable AI agents to **discover** c
 
 | Skill | Purpose | When to Use |
 |-------|---------|-------------|
-| `@architecting-act` | Design architecture | Planning new cast, unclear about structure, need CLAUDE.md |
+| `@architecting-act` | Design architecture | Starting {{ cookiecutter.act_name }} Project, Planning new cast, unclear about structure, need CLAUDE.md (includes development commands) |
 | `@developing-cast` | Implement code | Building nodes/agents/tools, need LangGraph patterns |
-| `@engineering-act` | Project setup | Creating cast package, adding dependencies, syncing env |
 | `@testing-cast` | Write tests | Creating pytest tests, mocking strategies, fixtures |
 
 ### How to Use
@@ -185,26 +184,23 @@ Skills can be invoked in three ways:
    @architecting-act Help me design a RAG pipeline
    ```
 2. **Programmatic invocation**: The agent automatically calls the skill via tool use.
-3. **Automatic discovery**: The agent reads the Skill’s description and loads it when relevant to the conversation.
+3. **Automatic discovery**: The agent reads the Skill's description and loads it when relevant to the conversation.
 
 ### Skill Workflow
 
 Skills guide you through their specific domain:
-- `architecting-act`: Interactive Q&A → generates `CLAUDE.md`
+- `architecting-act`: Interactive Q&A → generates `CLAUDE.md` (includes development commands: dev server, sync, cast creation, dependency management)
 - `developing-cast`: Reads `CLAUDE.md` (Optional) → implements code
-- `engineering-act`: Manages packages and dependencies
 - `testing-cast`: Creates pytest test files
 
 ### Recommended Development Flow
 
 ```
-1. @architecting-act  →  Design & create CLAUDE.md
+1. @architecting-act  →  Design & create CLAUDE.md (includes dev commands)
         ↓
-2. @engineering-act   →  Create cast, add dependencies
+2. @developing-cast   →  Implement nodes, agents, graphs
         ↓
-3. @developing-cast   →  Implement nodes, agents, graphs
-        ↓
-4. @testing-cast      →  Write and run tests
+3. @testing-cast      →  Write and run tests
 ```
 
 ## Architecture Diagram Kit
@@ -495,8 +491,7 @@ Agent Skills는 AI 에이전트가 기능을 **발견(Discover)** 하고, 관련
 
 | 스킬 | 목적 | 사용 시점 |
 |------|------|----------|
-| `@architecting-act` | 아키텍처 설계 | 새 cast 계획, 구조 불명확, CLAUDE.md 필요 시 |
-| `@engineering-act` | 프로젝트 설정 | cast 패키지 생성, 의존성 추가, 환경 동기화 |
+| `@architecting-act` | 아키텍처 설계 | {{ cookiecutter.act_name }} 프로젝트 시작 시 계획, 새 cast 계획, 구조 불명확, CLAUDE.md 필요 시 (개발 명령어 포함) |
 | `@developing-cast` | 코드 구현 | 노드/에이전트/툴 구현, LangGraph 패턴 필요 시 |
 | `@testing-cast` | 테스트 작성 | pytest 테스트 생성, 모킹 전략, 픽스처 |
 
@@ -514,21 +509,18 @@ Agent Skills는 AI 에이전트가 기능을 **발견(Discover)** 하고, 관련
 ### 스킬 워크플로우
 
 각 스킬은 해당 도메인에 맞게 안내합니다:
-- `architecting-act`: 대화형 Q&A → `CLAUDE.md` 생성
+- `architecting-act`: 대화형 Q&A → `CLAUDE.md` 생성 (개발 명령어 포함: 개발 서버, 동기화, 캐스트 생성, 의존성 관리)
 - `developing-cast`: `CLAUDE.md` 읽기(선택) → 코드 구현
-- `engineering-act`: 패키지 및 의존성 관리
 - `testing-cast`: pytest 테스트 파일 생성
 
 ### 권장 개발 흐름
 
 ```
-1. @architecting-act  →  설계 & CLAUDE.md 생성
+1. @architecting-act  →  설계 & CLAUDE.md 생성 (개발 명령어 포함)
         ↓
-2. @engineering-act   →  (필요 시) cast 생성, 의존성 추가
+2. @developing-cast   →  노드, 에이전트, 그래프, 기타 모듈 구현
         ↓
-3. @developing-cast   →  노드, 에이전트, 그래프, 기타 모듈 구현
-        ↓
-4. @testing-cast      →  테스트 작성 및 실행
+3. @testing-cast      →  테스트 작성 및 실행
 ```
 
 ## 아키텍처 다이어그램 키트

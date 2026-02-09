@@ -93,9 +93,8 @@ Simply mention the skill name in your prompt (e.g., "Use @architecting-act to de
 > **Note for other tools**: The `.claude` directory naming is specific to Claude Code. If you use other AI tools that support Agent Skills (like Cursor, Gemini CLI, etc.), please rename this directory or configure it according to that tool's requirements.
 
 **Available Skills**:
-- `architecting-act`: Design graph architectures through interactive questioning
+- `architecting-act`: Design graph architectures through interactive questioning, generate CLAUDE.md
 - `developing-cast`: Implement nodes, agents, tools with best practice patterns
-- `engineering-act`: Manage casts & their dependencies, create new casts
 - `testing-cast`: Write effective pytest tests with mocking strategies
 
 ### Working with Skills
@@ -111,10 +110,10 @@ Skills can be used individually or as a workflow:
   - After `act new`, design your first Act and Cast through interactive questions
   - Generates root and cast-specific CLAUDE.md files with architecture diagrams
 
-- **Adding New Cast** → Use `architecting-act` (Mode 2: Add Cast) + `engineering-act`
+- **Adding New Cast** → Use `architecting-act` (Mode 2: Add Cast)
   - Reads existing CLAUDE.md files for context
   - Designs new cast and updates CLAUDE.md files
-  - Creates cast package structure
+  - Generated CLAUDE.md includes development commands (cast creation, dependency management)
 
 - **Complex Cast Extraction** → Use `architecting-act` (Mode 3: Extract Sub-Cast)
   - Analyzes cast with >10 nodes for complexity
@@ -125,11 +124,6 @@ Skills can be used individually or as a workflow:
   - Reads cast's CLAUDE.md for specifications
   - Implements in order: state → deps → nodes → conditions → graph
   - Access 50+ patterns (agents, tools, memory, middlewares)
-
-- **Dependency Management** → Use `engineering-act`
-  - Checks CLAUDE.md Technology Stack section
-  - Manages monorepo and cast-level dependencies
-  - Syncs environment and launches dev server
 
 - **Testing** → Use `testing-cast`
   - Writes pytest tests with mocking strategies
@@ -157,7 +151,7 @@ Skills can be used individually or as a workflow:
    (architecting-act Mode 2: reads /CLAUDE.md, designs new cast, updates CLAUDE.md files)
 
 2. Scaffold Cast → "Create the knowledge-base cast package"
-   (engineering-act: runs `uv run act cast -c "knowledge-base"`)
+   (Run `uv run act cast -c "knowledge-base"` per CLAUDE.md development commands)
 
 3. Implement → "Implement knowledge-base based on its CLAUDE.md"
    (developing-cast: reads /casts/knowledge-base/CLAUDE.md, implements components)
@@ -172,7 +166,7 @@ Skills can be used individually or as a workflow:
    (architecting-act: creates /casts/input-validator/CLAUDE.md, updates parent references)
 
 3. Implement Sub-Cast → "Implement input-validator"
-   (developing-cast: implements sub-cast, engineering-act: manages dependencies)
+   (developing-cast: implements sub-cast, manages dependencies per CLAUDE.md commands)
 ```
 
 ## Project Structure
@@ -181,9 +175,8 @@ Skills can be used individually or as a workflow:
 my_workflow/
 ├── .claude/
 │   └── skills/                    # AI collaboration guides
-│       ├── architecting-act/      # Architecture design
+│       ├── architecting-act/      # Architecture design & development commands
 │       ├── developing-cast/       # Implementation patterns
-│       ├── engineering-act/       # Project management
 │       └── testing-cast/          # Testing strategies
 ├── casts/
 │   ├── base_node.py              # Base node class
