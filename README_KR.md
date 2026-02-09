@@ -93,9 +93,8 @@ claude
 > **다른 도구 사용 시 참고**: `.claude` 디렉터리 명명은 Claude Code 전용입니다. Agent Skills를 지원하는 다른 AI 도구(Cursor, Gemini CLI 등)를 사용하는 경우, 해당 도구의 요구사항에 맞춰 디렉터리 이름을 변경하거나 설정하세요.
 
 **사용 가능한 스킬**:
-- `architecting-act`: 대화형 질문을 통한 그래프 아키텍처 설계
+- `architecting-act`: 대화형 질문을 통한 그래프 아키텍처 설계,  CLAUDE.md 생성
 - `developing-cast`: 모범 사례 패턴으로 노드, 에이전트, 도구 구현
-- `engineering-act`: 캐스트 및 의존성 관리, 새로운 캐스트 생성
 - `testing-cast`: 모킹 전략을 활용한 효과적인 pytest 테스트 작성
 
 ### 스킬 활용하기
@@ -111,10 +110,10 @@ claude
   - `act new` 실행 후, 대화형 질문을 통해 첫 번째 Act와 Cast 설계
   - 아키텍처 다이어그램과 함께 루트 및 캐스트별 CLAUDE.md 파일 생성
 
-- **새 Cast 추가** → `architecting-act` (모드 2: Cast 추가) + `engineering-act` 사용
+- **새 Cast 추가** → `architecting-act` 사용 (모드 2: Cast 추가)
   - 기존 CLAUDE.md 파일을 읽어 컨텍스트 파악
   - 새 캐스트 설계 및 CLAUDE.md 파일 업데이트
-  - 캐스트 패키지 구조 생성
+  - 생성된 CLAUDE.md에 개발 명령어 포함 (캐스트 생성, 의존성 관리)
 
 - **복잡한 Cast 추출** → `architecting-act` 사용 (모드 3: Sub-Cast 추출)
   - 10개 이상의 노드를 가진 캐스트의 복잡도 분석
@@ -125,11 +124,6 @@ claude
   - 캐스트의 CLAUDE.md에서 명세 읽기
   - state → deps → nodes → conditions → graph 순서로 구현
   - 50개 이상의 패턴 활용 (agents, tools, memory, middlewares)
-
-- **의존성 관리** → `engineering-act` 사용
-  - CLAUDE.md의 Technology Stack 섹션 확인
-  - 모노레포 및 캐스트 레벨 의존성 관리
-  - 환경 동기화 및 개발 서버 실행
 
 - **테스팅** → `testing-cast` 사용
   - 모킹 전략을 활용한 pytest 테스트 작성
@@ -157,7 +151,7 @@ claude
    (architecting-act 모드 2: /CLAUDE.md 읽고, 새 캐스트 설계, CLAUDE.md 파일 업데이트)
 
 2. Cast 스캐폴딩 → "knowledge-base 캐스트 패키지 생성"
-   (engineering-act: `uv run act cast -c "knowledge-base"` 실행)
+   (CLAUDE.md 개발 명령어에 따라 `uv run act cast -c "knowledge-base"` 실행)
 
 3. 구현 → "CLAUDE.md 기반으로 knowledge-base 구현"
    (developing-cast: /casts/knowledge-base/CLAUDE.md 읽고, 컴포넌트 구현)
@@ -172,7 +166,7 @@ claude
    (architecting-act: /casts/input-validator/CLAUDE.md 생성, 부모 참조 업데이트)
 
 3. Sub-Cast 구현 → "input-validator 구현"
-   (developing-cast: 서브 캐스트 구현, engineering-act: 의존성 관리)
+   (developing-cast: 서브 캐스트 구현, CLAUDE.md 명령어로 의존성 관리)
 ```
 
 ## 프로젝트 구조
@@ -181,9 +175,8 @@ claude
 my_workflow/
 ├── .claude/
 │   └── skills/                    # AI 협업 가이드
-│       ├── architecting-act/      # 아키텍처 설계
+│       ├── architecting-act/      # 아키텍처 설계 및 개발 명령어
 │       ├── developing-cast/       # 구현 패턴
-│       ├── engineering-act/       # 프로젝트 관리
 │       └── testing-cast/          # 테스팅 전략
 ├── casts/
 │   ├── base_node.py              # 베이스 노드 클래스
