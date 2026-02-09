@@ -92,6 +92,22 @@ casts/{{CAST_SLUG}}/
 
 <!-- END AUTO-MANAGED -->
 
+<!-- AUTO-MANAGED: development-commands -->
+## Development Commands
+
+### Add Cast Dependency
+
+Add dependency to this cast only.
+
+```bash
+uv add --package {{CAST_SLUG}} <package>      # Add
+uv remove --package {{CAST_SLUG}} <package>   # Remove
+```
+
+After adding, update the Technology Stack section above.
+
+<!-- END AUTO-MANAGED -->
+
 <!-- MANUAL -->
 ## Notes
 
