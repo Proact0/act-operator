@@ -99,7 +99,7 @@ def _resolve_path(path_option: Path | None) -> tuple[Path, bool]:
         return path_option.expanduser().resolve(), True
 
     value = typer.prompt(
-        "📂 Please specify the path to create the new Act project",
+        "📂 Please specify the path to create the new Act(Project)",
         default=".",
         show_default=True,
     )
@@ -466,7 +466,7 @@ def _generate_project(
         if Path.cwd().exists() and any(Path.cwd().iterdir()):
             console.print(
                 "❌ The current directory is not empty. "
-                "Please use an empty directory to create a new Act project.",
+                "Please use an empty directory to create a new Act(Project).",
                 style="red",
             )
             raise typer.Exit(code=EXIT_CODE_ERROR)
@@ -477,11 +477,13 @@ def _generate_project(
         act_name = derived_name
 
     # Resolve and validate names
-    act_raw = _resolve_name("🚀 Please enter a name for the new Act", act_name)
+    act_raw = _resolve_name(
+        "🚀 Please enter a name for the new Act(Product/Project)", act_name
+    )
     act = build_name_variants(act_raw)
 
     cast_raw = _resolve_cast_name(
-        "🌟 Please enter a name for the first Cast",
+        "🌟 Please enter a name for the first Cast(Graph/Workflow/Pipeline)",
         cast_name,
         act.snake,
         act.title,
