@@ -41,8 +41,8 @@ pip install uv
 
 ```bash
 # 리포지토리 클론
-git clone https://github.com/Proact0/Act-Operator.git
-cd Act-Operator/act_operator
+git clone https://github.com/Proact0/act-operator.git
+cd act-operator/act_operator
 
 # 의존성 설치
 uv sync
@@ -489,7 +489,7 @@ PR 제출 전 확인하세요:
 ### 보안 취약점 보고
 
 **보고 방법:**
-- **채널**: [GitHub Security Advisories](https://github.com/Proact0/Act-Operator/security/advisories)
+- **채널**: [GitHub Security Advisories](https://github.com/Proact0/act-operator/security/advisories)
 - **필수 정보**:
   - 재현 절차 (단계별 상세 설명)
   - 영향 범위 (영향 받는 버전, 기능)

@@ -12,9 +12,9 @@ body:
 
         버그 등록 전, 아래 리소스를 확인하여 이미 보고되었거나 해결된 이슈인지 확인해주세요:
 
-        * Act Operator README: https://github.com/Proact0/Act-Operator#readme
-        * Act Operator GitHub Issues: https://github.com/Proact0/Act-Operator/issues
-        * 리포지토리 검색: https://github.com/Proact0/Act-Operator
+        * Act Operator README: https://github.com/Proact0/act-operator#readme
+        * Act Operator GitHub Issues: https://github.com/Proact0/act-operator/issues
+        * 리포지토리 검색: https://github.com/Proact0/act-operator
         * uv 문서: https://docs.astral.sh/uv/
         * Proact0 디스코드: https://discord.gg/4GTNbEy5EB
   - type: checkboxes

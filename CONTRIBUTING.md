@@ -41,8 +41,8 @@ pip install uv
 
 ```bash
 # Clone the repository
-git clone https://github.com/Proact0/Act-Operator.git
-cd Act-Operator/act_operator
+git clone https://github.com/Proact0/act-operator.git
+cd act-operator/act_operator
 
 # Install dependencies
 uv sync
@@ -489,7 +489,7 @@ Before submitting a PR, verify:
 ### Security Vulnerability Reports
 
 **Reporting Method:**
-- **Channel**: [GitHub Security Advisories](https://github.com/Proact0/Act-Operator/security/advisories)
+- **Channel**: [GitHub Security Advisories](https://github.com/Proact0/act-operator/security/advisories)
 - **Required Information**:
   - Reproduction steps (detailed step-by-step)
   - Impact scope (affected versions, features)
