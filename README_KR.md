@@ -301,8 +301,8 @@ act cast [OPTIONS]
 
 모든 기여자분들께 감사드립니다! 여러분의 기여가 Act Operator를 더 나아지게 만듭니다.
 
-<a href="https://github.com/Proact0/Act-Operator/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Proact0/Act-Operator" />
+<a href="https://github.com/Proact0/act-operator/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Proact0/act-operator" />
 </a>
 
 ## 라이선스

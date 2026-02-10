@@ -36,7 +36,7 @@ dev = [
 
 [project.urls]
 Repository = "https://github.com/Proact0/act-operator"
-Homepage = "https://github.com/Proact0/Act-Operator"
+Homepage = "https://www.proact0.org"
 
 [project.scripts]
 act = "act_operator.cli:main"

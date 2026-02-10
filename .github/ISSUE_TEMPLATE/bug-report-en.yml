@@ -12,9 +12,9 @@ body:
 
         Before filing, please check the following resources to see if your issue has already been reported or solved:
 
-        * Act Operator README: https://github.com/Proact0/Act-Operator#readme
-        * Act Operator GitHub Issues: https://github.com/Proact0/Act-Operator/issues
-        * GitHub search in this repo: https://github.com/Proact0/Act-Operator
+        * Act Operator README: https://github.com/Proact0/act-operator#readme
+        * Act Operator GitHub Issues: https://github.com/Proact0/act-operator/issues
+        * GitHub search in this repo: https://github.com/Proact0/act-operator
         * uv documentation: https://docs.astral.sh/uv/
         * Our Discord: https://discord.gg/4GTNbEy5EB
   - type: checkboxes

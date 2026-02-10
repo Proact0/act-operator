@@ -301,8 +301,8 @@ We welcome contributions from the community! Please read our contributing guide:
 
 Thank you to all our contributors! Your contributions make Act Operator better.
 
-<a href="https://github.com/Proact0/Act-Operator/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Proact0/Act-Operator" />
+<a href="https://github.com/Proact0/act-operator/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Proact0/act-operator" />
 </a>
 
 ## License
