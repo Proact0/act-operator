@@ -235,8 +235,8 @@ Nodes inherit `BaseNode` and declare only the parameters they need:
 
 ```mermaid
 graph LR
-    I["InputState\n(query: str)"] -->|feeds into| S["State\n(MessagesState +\nquery + result)"]
-    S -->|extracted as| O["OutputState\n(result: str)"]
+    I["InputState<br/>(query: str)"] -->|feeds into| S["State<br/>(MessagesState +<br/>query + result)"]
+    S -->|extracted as| O["OutputState<br/>(result: str)"]
 ```
 
 - **InputState**: External API input contract

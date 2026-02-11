@@ -235,8 +235,8 @@ sequenceDiagram
 
 ```mermaid
 graph LR
-    I["InputState\n(query: str)"] -->|입력| S["State\n(MessagesState +\nquery + result)"]
-    S -->|추출| O["OutputState\n(result: str)"]
+    I["InputState<br/>(query: str)"] -->|입력| S["State<br/>(MessagesState +<br/>query + result)"]
+    S -->|추출| O["OutputState<br/>(result: str)"]
 ```
 
 - **InputState**: 외부 API 입력 계약
