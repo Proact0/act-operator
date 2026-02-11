@@ -207,21 +207,17 @@ graph TD
 
 ```mermaid
 sequenceDiagram
-    participant C as 클라이언트
-    participant LS as LangGraph 서버
     participant G as 그래프
     participant N as 노드 (BaseNode)
     participant St as 상태(State)
 
-    C->>LS: POST /runs/invoke {"query": "..."}
-    LS->>G: graph.invoke(InputState)
-    G->>St: State 초기화
+    G->>St: InputState로 State 초기화
     loop 그래프 내 각 노드에 대해
         G->>N: node.__call__(state, config, runtime)
         N->>N: execute(state, ...) → dict
         N->>St: 반환된 dict를 State에 병합
     end
-    G->>C: OutputState 추출 → 응답
+    G->>G: OutputState 추출 → 결과
 ```
 
 ### 노드 시그니처

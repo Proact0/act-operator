@@ -207,21 +207,17 @@ graph TD
 
 ```mermaid
 sequenceDiagram
-    participant C as Client
-    participant LS as LangGraph Server
     participant G as Graph
     participant N as Node (BaseNode)
     participant St as State
 
-    C->>LS: POST /runs/invoke {"query": "..."}
-    LS->>G: graph.invoke(InputState)
-    G->>St: Initialize State
+    G->>St: Initialize State from InputState
     loop For each node in graph
         G->>N: node.__call__(state, config, runtime)
         N->>N: execute(state, ...) → dict
         N->>St: Merge returned dict into State
     end
-    G->>C: Extract OutputState → Response
+    G->>G: Extract OutputState → Result
 ```
 
 ### Node Signature
