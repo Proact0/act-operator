@@ -238,7 +238,7 @@ sequenceDiagram
     AA->>P: CLAUDE.md 생성 (아키텍처 명세)
 
     Note over U,P: 2단계 — 구현
-    U->>DC: Cast 구현 지시
+    U->>DC: Cast 모듈 구현 지시
     DC->>P: CLAUDE.md 읽기 (아키텍처 명세)
     DC->>P: state.py → nodes.py → conditions.py → graph.py
     DC->>P: 의존성 설치 (uv add)

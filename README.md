@@ -238,7 +238,7 @@ sequenceDiagram
     AA->>P: Generate CLAUDE.md (architecture spec)
 
     Note over U,P: Phase 2 — Implementation
-    U->>DC: Instruct the agent to implement the Cast
+    U->>DC: Instruct the agent to implement the Cast's Modules
     DC->>P: Read CLAUDE.md (architecture spec)
     DC->>P: state.py → nodes.py → conditions.py → optional modules → graph.py
     DC->>P: Install dependencies (uv add)
