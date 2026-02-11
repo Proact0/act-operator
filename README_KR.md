@@ -223,29 +223,28 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant U as 개발자
+    participant U as Developer
     box rgba(100, 149, 237, 0.15) Agent Skills
         participant AA as @architecting-act
         participant DC as @developing-cast
         participant TC as @testing-cast
     end
-    participant P as 프로젝트
+    participant P as Act Project
 
     Note over U,P: 1단계 — 아키텍처 설계
-    U->>AA: "RAG 파이프라인 설계해줘"
+    U->>AA: Act/Cast 아키텍처 설계 지시
     AA->>U: AskUserQuestion (목적, 패턴, 기술 스택)
     U->>AA: 선택지 응답
     AA->>P: CLAUDE.md 생성 (아키텍처 명세)
-    AA->>P: validate_architecture.py 실행
 
     Note over U,P: 2단계 — 구현
-    U->>DC: "캐스트 구현해줘"
+    U->>DC: Cast 구현 지시
     DC->>P: CLAUDE.md 읽기 (아키텍처 명세)
     DC->>P: state.py → nodes.py → conditions.py → graph.py
     DC->>P: 의존성 설치 (uv add)
 
     Note over U,P: 3단계 — 테스팅
-    U->>TC: "테스트 작성해줘"
+    U->>TC: Cast 테스트 지시
     TC->>P: 구현 코드 읽기
     TC->>P: 노드 단위 테스트 + 그래프 통합 테스트
     TC->>P: uv run pytest --cov

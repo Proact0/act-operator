@@ -225,27 +225,26 @@ sequenceDiagram
 sequenceDiagram
     participant U as Developer
     box rgba(100, 149, 237, 0.15) Agent Skills
-        participant AA as @architecting-act
-        participant DC as @developing-cast
-        participant TC as @testing-cast
+        participant AA as architecting-act
+        participant DC as developing-cast
+        participant TC as testing-cast
     end
-    participant P as Project
+    participant P as Act Project
 
     Note over U,P: Phase 1 — Architecture Design
-    U->>AA: "Design a RAG pipeline"
+    U->>AA: Instruct the agent to design the Act/Cast architecture
     AA->>U: AskUserQuestion (purpose, pattern, tech stack)
     U->>AA: Answer selections
     AA->>P: Generate CLAUDE.md (architecture spec)
-    AA->>P: Run validate_architecture.py
 
     Note over U,P: Phase 2 — Implementation
-    U->>DC: "Implement the cast"
+    U->>DC: Instruct the agent to implement the Cast
     DC->>P: Read CLAUDE.md (architecture spec)
-    DC->>P: state.py → nodes.py → conditions.py → graph.py
+    DC->>P: state.py → nodes.py → conditions.py → optional modules → graph.py
     DC->>P: Install dependencies (uv add)
 
     Note over U,P: Phase 3 — Testing
-    U->>TC: "Write tests"
+    U->>TC: Instruct the agent to test the Cast 
     TC->>P: Read implementation code
     TC->>P: Node unit tests + Graph integration tests
     TC->>P: uv run pytest --cov
