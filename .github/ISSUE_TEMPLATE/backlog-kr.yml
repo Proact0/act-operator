@@ -28,70 +28,46 @@ body:
           required: true
         - label: 기존 이슈/PR을 검색했고, 중복되지 않습니다.
           required: true
+  - type: checkboxes
+    id: ownership
+    attributes:
+      label: 💪 오너십 선언 (선택)
+      description: "Proact0 문화: Hand-raise - 솔루션을 주도하고 책임지는 것을 존중합니다."
+      options:
+        - label: "🙋 Hand-raise: 제가 이 기능을 직접 구현하고 싶습니다"
+        - label: "🤝 협업 환영: 다른 분들과 함께 작업하고 싶습니다"
+        - label: "💡 아이디어만: 다른 분이 구현해주시길 제안합니다"
   - type: textarea
     id: description
     validations:
       required: true
     attributes:
-      label: 요약
-      description: |
-        어떤 기능/개선을 원하시나요?
-        동기/목표/사용자에게 주는 이점을 설명해주세요.
+      label: 💡 무엇을 원하시나요?
+      description: 1-3문장으로 아이디어를 설명해주세요.
       placeholder: |
-        * Y를 지원하기 위해 X 추가를 제안합니다.
-        * Z 방식으로 사용자에게 도움이 됩니다.
+        예시: "act new에 --template 플래그로 커스텀 스캐폴드 지원했으면 좋겠어요"
+        예시: "캐스트 이름 자동완성 기능 추가"
   - type: textarea
-    id: use-case
+    id: example
     validations:
-      required: true
+      required: false
     attributes:
-      label: 사용 사례 / 시나리오
-      description: 이 기능이 유용한 대표 워크플로우/상황을 설명해주세요.
+      label: 💻 예시 CLI 또는 코드 (선택)
+      description: 어떻게 보일지 보여주세요!
       placeholder: |
-        * 스캐폴딩 시 ..., ...이 필요합니다.
-        * 캐스트 추가 시 ..., ...가 있으면 좋겠습니다.
-        * ...에 관련된 Claude Skill / Cursor Rule 등이 있으면 좋겠습니다.
+        uv run act new --template corporate --act-name "MyAct"
+        # 또는 코드 스니펫, 설정 예시 등
   - type: textarea
-    id: proposal
+    id: mockup
     validations:
       required: false
     attributes:
-      label: 제안 솔루션 / UX
-      description: |
-        CLI 플래그, 프롬프트, 설정, 예시 명령에 대한 아이디어가 있다면 작성해주세요.
-      placeholder: |
-        예시 CLI:
-        uv run act new --path ./my-act --act-name "My Act" --cast-name "Main Cast" --flag ...
-  - type: textarea
-    id: alternatives
-    validations:
-      required: false
-    attributes:
-      label: 고려한 대안
-      description: 가능하다면, 다른 접근과 트레이드오프를 설명해주세요.
-  - type: textarea
-    id: references
-    validations:
-      required: false
-    attributes:
-      label: 참고자료(선택)
-      description: 관련 이슈/PR/문서 링크를 추가해주세요.
-  - type: textarea
-    id: screenshots
-    validations:
-      required: false
-    attributes:
-      label: 목업 / 예시(선택)
-      description: 해당되는 경우 제안을 이해하는 데 도움이 되는 스크린샷이나 의사 출력(pseudo-output)을 추가해주세요.
-  - type: textarea
-    id: additional
-    validations:
-      required: false
-    attributes:
-      label: 추가 컨텍스트
-      description: 기타 고려 사항이나 배경이 있으면 작성해주세요.
+      label: 📸 스크린샷 또는 출력 (선택)
+      description: 도움이 된다면 스크린샷, 터미널 출력, 목업 등을 추가해주세요.
   - type: markdown
     attributes:
       value: |
-        브랜치 팁: 작업을 시작할 때 `feat/[간결한-기능-이름]` 브랜치를 만들어주세요.
-        PR은 작고 집중된 변경으로 유지해주세요.
+        ---
+
+        **Proact0 문화:** 이것은 Working Standard입니다 - 여러분의 아이디어는 피드백을 통해 진화합니다.
+        완벽함을 기다리지 말고, 생각을 먼저 공유해주세요! 🚀

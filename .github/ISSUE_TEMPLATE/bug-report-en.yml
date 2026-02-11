@@ -31,6 +31,15 @@ body:
           required: true
         - label: I included self-contained minimal reproduction steps, including the exact CLI commands or code used.
           required: true
+  - type: checkboxes
+    id: ownership
+    attributes:
+      label: 💪 Ownership Declaration (Optional)
+      description: "Proact0 Culture: We value Hand-raise - taking charge and leading the solution."
+      options:
+        - label: "🙋 Hand-raise: I want to fix this bug myself"
+        - label: "🤝 Collaboration Welcome: I want to work on this with others"
+        - label: "🐛 Report Only: Reporting for someone else to fix"
   - type: textarea
     id: reproduction
     validations:
