@@ -29,16 +29,6 @@ jobs:
             chore
             revert
             release
-          scopes: |
-            cli
-            scaffold
-            utils
-            docs
-            tests
-            workflow
-            cookiecutter
-            ci
-            deps
           requireScope: false
           ignoreLabels: |
             ignore-lint-pr-title

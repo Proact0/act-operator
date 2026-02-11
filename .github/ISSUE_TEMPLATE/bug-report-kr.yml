@@ -31,6 +31,15 @@ body:
           required: true
         - label: 사용한 정확한 CLI 명령 또는 코드 포함하여, 자체 포함된 최소 재현 단계를 포함했습니다.
           required: true
+  - type: checkboxes
+    id: ownership
+    attributes:
+      label: 💪 오너십 선언 (선택)
+      description: "Proact0 문화: Hand-raise - 솔루션을 주도하고 책임지는 것을 존중합니다."
+      options:
+        - label: "🙋 Hand-raise: 제가 이 버그를 직접 수정하고 싶습니다"
+        - label: "🤝 협업 환영: 다른 분들과 함께 작업하고 싶습니다"
+        - label: "🐛 리포트만: 다른 분이 수정해주시길 바랍니다"
   - type: textarea
     id: reproduction
     validations:
