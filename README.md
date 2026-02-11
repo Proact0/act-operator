@@ -177,8 +177,7 @@ The diagram below shows how modules connect within a Cast.
 
 ```mermaid
 graph TD
-    LG["langgraph.json"] -->|entry point| G["graph.py"]
-    G -->|inherits| BG["base_graph.py"]
+    LG["graph.py"] -->|inherits| BG["base_graph.py"]
     G -->|imports| S["state.py"]
     G -->|imports| N["nodes.py"]
     G -->|imports| CD["conditions.py"]
@@ -219,29 +218,6 @@ sequenceDiagram
     end
     G->>G: Extract OutputState → Result
 ```
-
-### Node Signature
-
-Nodes inherit `BaseNode` and declare only the parameters they need:
-
-| Signature | Access |
-|-----------|--------|
-| `execute(self, state)` | State only |
-| `execute(self, state, config)` | + thread_id, tags |
-| `execute(self, state, runtime)` | + store, stream |
-| `execute(self, state, config, runtime)` | Full access |
-
-### State Schema
-
-```mermaid
-graph LR
-    I["InputState<br/>(query: str)"] -->|feeds into| S["State<br/>(MessagesState +<br/>query + result)"]
-    S -->|extracted as| O["OutputState<br/>(result: str)"]
-```
-
-- **InputState**: External API input contract
-- **State**: Internal graph state (inherits `MessagesState` for built-in message handling)
-- **OutputState**: External API output contract
 
 ## Project Structure
 

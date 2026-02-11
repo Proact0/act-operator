@@ -177,8 +177,7 @@ claude
 
 ```mermaid
 graph TD
-    LG["langgraph.json"] -->|진입점| G["graph.py"]
-    G -->|상속| BG["base_graph.py"]
+    LG["graph.py"] -->|상속| BG["base_graph.py"]
     G -->|가져오기| S["state.py"]
     G -->|가져오기| N["nodes.py"]
     G -->|가져오기| CD["conditions.py"]
@@ -230,18 +229,6 @@ sequenceDiagram
 | `execute(self, state, config)` | + thread_id, tags |
 | `execute(self, state, runtime)` | + store, stream |
 | `execute(self, state, config, runtime)` | 전체 접근 |
-
-### State 스키마
-
-```mermaid
-graph LR
-    I["InputState<br/>(query: str)"] -->|입력| S["State<br/>(MessagesState +<br/>query + result)"]
-    S -->|추출| O["OutputState<br/>(result: str)"]
-```
-
-- **InputState**: 외부 API 입력 계약
-- **State**: 내부 그래프 상태 (`MessagesState` 상속으로 메시지 자동 관리)
-- **OutputState**: 외부 API 출력 계약
 
 ## 프로젝트 구조
 
