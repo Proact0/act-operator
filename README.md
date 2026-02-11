@@ -224,9 +224,11 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant U as Developer
-    participant AA as @architecting-act
-    participant DC as @developing-cast
-    participant TC as @testing-cast
+    box Agent Skills
+        participant AA as @architecting-act
+        participant DC as @developing-cast
+        participant TC as @testing-cast
+    end
     participant P as Project
 
     Note over U,P: Phase 1 — Architecture Design

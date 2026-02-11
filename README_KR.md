@@ -219,25 +219,16 @@ sequenceDiagram
     G->>G: OutputState 추출 → 결과
 ```
 
-### 노드 시그니처
-
-노드는 `BaseNode`을 상속하고 필요한 파라미터만 선언합니다:
-
-| 시그니처 | 접근 가능 항목 |
-|---------|-------------|
-| `execute(self, state)` | State만 |
-| `execute(self, state, config)` | + thread_id, tags |
-| `execute(self, state, runtime)` | + store, stream |
-| `execute(self, state, config, runtime)` | 전체 접근 |
-
 ### 스킬 기반 개발 흐름
 
 ```mermaid
 sequenceDiagram
     participant U as 개발자
-    participant AA as @architecting-act
-    participant DC as @developing-cast
-    participant TC as @testing-cast
+    box Agent Skills
+        participant AA as @architecting-act
+        participant DC as @developing-cast
+        participant TC as @testing-cast
+    end
     participant P as 프로젝트
 
     Note over U,P: 1단계 — 아키텍처 설계
