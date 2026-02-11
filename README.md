@@ -229,30 +229,24 @@ sequenceDiagram
     participant TC as @testing-cast
     participant P as Project
 
-    rect
-        Note over U,P: Phase 1 — Architecture Design
-        U->>AA: "Design a RAG pipeline"
-        AA->>U: AskUserQuestion (purpose, pattern, tech stack)
-        U->>AA: Answer selections
-        AA->>P: Generate CLAUDE.md (architecture spec)
-        AA->>P: Run validate_architecture.py
-    end
+    Note over U,P: Phase 1 — Architecture Design
+    U->>AA: "Design a RAG pipeline"
+    AA->>U: AskUserQuestion (purpose, pattern, tech stack)
+    U->>AA: Answer selections
+    AA->>P: Generate CLAUDE.md (architecture spec)
+    AA->>P: Run validate_architecture.py
 
-    rect 
-        Note over U,P: Phase 2 — Implementation
-        U->>DC: "Implement the cast"
-        DC->>P: Read CLAUDE.md (architecture spec)
-        DC->>P: state.py → nodes.py → conditions.py → graph.py
-        DC->>P: Install dependencies (uv add)
-    end
+    Note over U,P: Phase 2 — Implementation
+    U->>DC: "Implement the cast"
+    DC->>P: Read CLAUDE.md (architecture spec)
+    DC->>P: state.py → nodes.py → conditions.py → graph.py
+    DC->>P: Install dependencies (uv add)
 
-    rect
-        Note over U,P: Phase 3 — Testing
-        U->>TC: "Write tests"
-        TC->>P: Read implementation code
-        TC->>P: Node unit tests + Graph integration tests
-        TC->>P: uv run pytest --cov
-    end
+    Note over U,P: Phase 3 — Testing
+    U->>TC: "Write tests"
+    TC->>P: Read implementation code
+    TC->>P: Node unit tests + Graph integration tests
+    TC->>P: uv run pytest --cov
 ```
 
 ## Project Structure
