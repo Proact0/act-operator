@@ -240,7 +240,7 @@ sequenceDiagram
     participant TC as @testing-cast
     participant P as 프로젝트
 
-    rect rgb(240, 248, 255)
+    rect
         Note over U,P: 1단계 — 아키텍처 설계
         U->>AA: "RAG 파이프라인 설계해줘"
         AA->>U: AskUserQuestion (목적, 패턴, 기술 스택)
@@ -249,7 +249,7 @@ sequenceDiagram
         AA->>P: validate_architecture.py 실행
     end
 
-    rect rgb(240, 255, 240)
+    rect
         Note over U,P: 2단계 — 구현
         U->>DC: "캐스트 구현해줘"
         DC->>P: CLAUDE.md 읽기 (아키텍처 명세)
@@ -257,7 +257,7 @@ sequenceDiagram
         DC->>P: 의존성 설치 (uv add)
     end
 
-    rect rgb(255, 248, 240)
+    rect
         Note over U,P: 3단계 — 테스팅
         U->>TC: "테스트 작성해줘"
         TC->>P: 구현 코드 읽기

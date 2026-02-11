@@ -229,7 +229,7 @@ sequenceDiagram
     participant TC as @testing-cast
     participant P as Project
 
-    rect rgb(240, 248, 255)
+    rect
         Note over U,P: Phase 1 — Architecture Design
         U->>AA: "Design a RAG pipeline"
         AA->>U: AskUserQuestion (purpose, pattern, tech stack)
@@ -238,7 +238,7 @@ sequenceDiagram
         AA->>P: Run validate_architecture.py
     end
 
-    rect rgb(240, 255, 240)
+    rect 
         Note over U,P: Phase 2 — Implementation
         U->>DC: "Implement the cast"
         DC->>P: Read CLAUDE.md (architecture spec)
@@ -246,7 +246,7 @@ sequenceDiagram
         DC->>P: Install dependencies (uv add)
     end
 
-    rect rgb(255, 248, 240)
+    rect
         Note over U,P: Phase 3 — Testing
         U->>TC: "Write tests"
         TC->>P: Read implementation code
