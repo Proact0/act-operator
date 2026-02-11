@@ -230,6 +230,42 @@ sequenceDiagram
 | `execute(self, state, runtime)` | + store, stream |
 | `execute(self, state, config, runtime)` | 전체 접근 |
 
+### 스킬 기반 개발 흐름
+
+```mermaid
+sequenceDiagram
+    participant U as 개발자
+    participant AA as @architecting-act
+    participant DC as @developing-cast
+    participant TC as @testing-cast
+    participant P as 프로젝트
+
+    rect rgb(240, 248, 255)
+        Note over U,P: 1단계 — 아키텍처 설계
+        U->>AA: "RAG 파이프라인 설계해줘"
+        AA->>U: AskUserQuestion (목적, 패턴, 기술 스택)
+        U->>AA: 선택지 응답
+        AA->>P: CLAUDE.md 생성 (아키텍처 명세)
+        AA->>P: validate_architecture.py 실행
+    end
+
+    rect rgb(240, 255, 240)
+        Note over U,P: 2단계 — 구현
+        U->>DC: "캐스트 구현해줘"
+        DC->>P: CLAUDE.md 읽기 (아키텍처 명세)
+        DC->>P: state.py → nodes.py → conditions.py → graph.py
+        DC->>P: 의존성 설치 (uv add)
+    end
+
+    rect rgb(255, 248, 240)
+        Note over U,P: 3단계 — 테스팅
+        U->>TC: "테스트 작성해줘"
+        TC->>P: 구현 코드 읽기
+        TC->>P: 노드 단위 테스트 + 그래프 통합 테스트
+        TC->>P: uv run pytest --cov
+    end
+```
+
 ## 프로젝트 구조
 
 ```

@@ -219,6 +219,42 @@ sequenceDiagram
     G->>G: Extract OutputState → Result
 ```
 
+### Skill-Driven Development Flow
+
+```mermaid
+sequenceDiagram
+    participant U as Developer
+    participant AA as @architecting-act
+    participant DC as @developing-cast
+    participant TC as @testing-cast
+    participant P as Project
+
+    rect rgb(240, 248, 255)
+        Note over U,P: Phase 1 — Architecture Design
+        U->>AA: "Design a RAG pipeline"
+        AA->>U: AskUserQuestion (purpose, pattern, tech stack)
+        U->>AA: Answer selections
+        AA->>P: Generate CLAUDE.md (architecture spec)
+        AA->>P: Run validate_architecture.py
+    end
+
+    rect rgb(240, 255, 240)
+        Note over U,P: Phase 2 — Implementation
+        U->>DC: "Implement the cast"
+        DC->>P: Read CLAUDE.md (architecture spec)
+        DC->>P: state.py → nodes.py → conditions.py → graph.py
+        DC->>P: Install dependencies (uv add)
+    end
+
+    rect rgb(255, 248, 240)
+        Note over U,P: Phase 3 — Testing
+        U->>TC: "Write tests"
+        TC->>P: Read implementation code
+        TC->>P: Node unit tests + Graph integration tests
+        TC->>P: uv run pytest --cov
+    end
+```
+
 ## Project Structure
 
 ```
