@@ -178,9 +178,9 @@ The diagram below shows how modules connect within a Cast.
 ```mermaid
 graph TD
     LG["graph.py"] -->|inherits| BG["base_graph.py"]
-    G -->|imports| S["state.py"]
-    G -->|imports| N["nodes.py"]
-    G -->|imports| CD["conditions.py"]
+    LG -->|imports| S["state.py"]
+    LG -->|imports| N["nodes.py"]
+    LG -->|imports| CD["conditions.py"]
     N -->|inherits| BN["base_node.py"]
     N -.->|optional| A["agents.py"]
     N -.->|optional| U["utils.py"]

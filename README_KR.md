@@ -178,9 +178,9 @@ claude
 ```mermaid
 graph TD
     LG["graph.py"] -->|상속| BG["base_graph.py"]
-    G -->|가져오기| S["state.py"]
-    G -->|가져오기| N["nodes.py"]
-    G -->|가져오기| CD["conditions.py"]
+    LG -->|가져오기| S["state.py"]
+    LG -->|가져오기| N["nodes.py"]
+    LG -->|가져오기| CD["conditions.py"]
     N -->|상속| BN["base_node.py"]
     N -.->|선택| A["agents.py"]
     N -.->|선택| U["utils.py"]
