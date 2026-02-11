@@ -224,7 +224,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant U as Developer
-    box Agent Skills
+    box rgba(100, 149, 237, 0.15) Agent Skills
         participant AA as @architecting-act
         participant DC as @developing-cast
         participant TC as @testing-cast
