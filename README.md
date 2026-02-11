@@ -169,6 +169,87 @@ Skills can be used individually or as a workflow:
    (developing-cast: implements sub-cast, manages dependencies per CLAUDE.md commands)
 ```
 
+## Architecture
+
+### Module Dependency
+
+The diagram below shows how modules connect within a Cast.
+
+```mermaid
+graph TD
+    LG["graph.py"] -->|inherits| BG["base_graph.py"]
+    LG -->|imports| S["state.py"]
+    LG -->|imports| N["nodes.py"]
+    LG -->|imports| CD["conditions.py"]
+    N -->|inherits| BN["base_node.py"]
+    N -.->|optional| A["agents.py"]
+    N -.->|optional| U["utils.py"]
+    A -.->|uses| M["models.py"]
+    A -.->|uses| P["prompts.py"]
+    A -.->|uses| T["tools.py"]
+    A -.->|uses| MW["middlewares.py"]
+
+    classDef required fill:#4a9eff,stroke:#2d7cd6,color:#fff
+    classDef optional fill:#a0a0a0,stroke:#808080,color:#fff
+    classDef base fill:#34c759,stroke:#28a745,color:#fff
+    classDef entry fill:#ff9500,stroke:#e68a00,color:#fff
+
+    class LG entry
+    class G,S,N required
+    class BG,BN base
+    class CD,A,T,MW,M,P,U optional
+```
+
+> **Legend**: 🟠 Entry Point / 🔵 Required / 🟢 Base Class / ⚫ Optional
+
+### Execution Flow
+
+```mermaid
+sequenceDiagram
+    participant G as Graph
+    participant N as Node (BaseNode)
+    participant St as State
+
+    G->>St: Initialize State from InputState
+    loop For each node in graph
+        G->>N: node.__call__(state, config, runtime)
+        N->>N: execute(state, ...) → dict
+        N->>St: Merge returned dict into State
+    end
+    G->>G: Extract OutputState → Result
+```
+
+### Skill-Driven Development Flow
+
+```mermaid
+sequenceDiagram
+    participant U as Developer
+    box rgba(100, 149, 237, 0.15) Agent Skills
+        participant AA as architecting-act
+        participant DC as developing-cast
+        participant TC as testing-cast
+    end
+    participant P as Act Project
+
+    Note over U,P: Phase 1 — Architecture Design
+    U->>AA: Instruct the agent to design the Act/Cast architecture
+    AA->>U: AskUserQuestion (purpose, pattern, tech stack)
+    U->>AA: Answer selections
+    AA->>P: Generate CLAUDE.md (architecture spec)
+
+    Note over U,P: Phase 2 — Implementation
+    U->>DC: Instruct the agent to implement the Cast's Modules
+    DC->>P: Read CLAUDE.md (architecture spec)
+    DC->>P: state.py → nodes.py → conditions.py → optional modules → graph.py
+    DC->>P: Install dependencies (uv add)
+
+    Note over U,P: Phase 3 — Testing
+    U->>TC: Instruct the agent to test the Cast 
+    TC->>P: Read implementation code
+    TC->>P: Node unit tests + Graph integration tests
+    TC->>P: uv run pytest --cov
+```
+
 ## Project Structure
 
 ```
@@ -176,29 +257,35 @@ my_workflow/
 ├── .claude/
 │   └── skills/                    # AI collaboration guides
 │       ├── architecting-act/      # Architecture design & development commands
+│       │   ├── resources/         # Design patterns, questions, decision matrices
+│       │   ├── scripts/           # Architecture validation (validate_architecture.py)
+│       │   └── templates/         # CLAUDE.md generation templates
 │       ├── developing-cast/       # Implementation patterns
+│       │   └── resources/         # 50+ LangGraph patterns (core, agents, memory, middleware, ...)
 │       └── testing-cast/          # Testing strategies
+│           └── resources/         # Mocking, fixtures, coverage guides
 ├── casts/
-│   ├── base_node.py              # Base node class
-│   ├── base_graph.py             # Base graph utilities
+│   ├── base_node.py              # Base node class (sync/async, signature validation)
+│   ├── base_graph.py             # Base graph class (abstract build method)
 │   └── chatbot/                  # Your cast (graph package)
 │       ├── modules/
-│       │   ├── state.py          # Graph state definition
-│       │   ├── nodes.py          # Node implementations
-│       │   ├── agents.py         # Agent configurations
-│       │   ├── tools.py          # Tool definitions
-│       │   ├── models.py         # LLM model configs
-│       │   ├── conditions.py     # Routing conditions
-│       │   ├── middlewares.py    # Custom middleware
-│       │   └── prompts.py        # Prompt templates
-│       ├── graph.py              # Graph assembly
-│       └── pyproject.toml        # Cast dependencies
+│       │   ├── state.py          # [Required] InputState, OutputState, State
+│       │   ├── nodes.py          # [Required] Node implementations (BaseNode subclass)
+│       │   ├── agents.py         # [Optional] Agent configurations
+│       │   ├── tools.py          # [Optional] Tool definitions / MCP adapters
+│       │   ├── models.py         # [Optional] LLM model configs
+│       │   ├── conditions.py     # [Optional] Routing conditions
+│       │   ├── middlewares.py    # [Optional] Lifecycle hooks (before/after agent/model)
+│       │   ├── prompts.py        # [Optional] Prompt templates
+│       │   └── utils.py          # [Optional] Helper functions
+│       ├── graph.py              # Graph assembly (BaseGraph subclass → entry point)
+│       └── pyproject.toml        # Cast-specific dependencies
 ├── tests/
-│   ├── cast_tests/               # Graph-level tests
-│   └── node_tests/               # Unit tests
-├── langgraph.json                # LangGraph configuration
-├── pyproject.toml                # Monorepo dependencies
-├── TEMPLATE_README.md            # Template Using Guideline
+│   ├── cast_tests/               # Graph integration tests
+│   └── node_tests/               # Node unit tests
+├── langgraph.json                # LangGraph entry points (graph registration)
+├── pyproject.toml                # Monorepo workspace (uv workspace, shared deps)
+├── TEMPLATE_README.md            # Template usage guideline
 └── README.md
 ```
 

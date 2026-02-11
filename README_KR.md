@@ -169,6 +169,87 @@ claude
    (developing-cast: 서브 캐스트 구현, CLAUDE.md 명령어로 의존성 관리)
 ```
 
+## 아키텍처
+
+### 모듈 의존성
+
+아래 다이어그램은 Cast 내부 모듈 간의 연결 구조를 보여줍니다.
+
+```mermaid
+graph TD
+    LG["graph.py"] -->|상속| BG["base_graph.py"]
+    LG -->|가져오기| S["state.py"]
+    LG -->|가져오기| N["nodes.py"]
+    LG -->|가져오기| CD["conditions.py"]
+    N -->|상속| BN["base_node.py"]
+    N -.->|선택| A["agents.py"]
+    N -.->|선택| U["utils.py"]
+    A -.->|사용| M["models.py"]
+    A -.->|사용| P["prompts.py"]
+    A -.->|사용| T["tools.py"]
+    A -.->|사용| MW["middlewares.py"]
+
+    classDef required fill:#4a9eff,stroke:#2d7cd6,color:#fff
+    classDef optional fill:#a0a0a0,stroke:#808080,color:#fff
+    classDef base fill:#34c759,stroke:#28a745,color:#fff
+    classDef entry fill:#ff9500,stroke:#e68a00,color:#fff
+
+    class LG entry
+    class G,S,N required
+    class BG,BN base
+    class CD,A,T,MW,M,P,U optional
+```
+
+> **범례**: 🟠 진입점 / 🔵 필수 / 🟢 베이스 클래스 / ⚫ 선택적
+
+### 실행 흐름
+
+```mermaid
+sequenceDiagram
+    participant G as 그래프
+    participant N as 노드 (BaseNode)
+    participant St as 상태(State)
+
+    G->>St: InputState로 State 초기화
+    loop 그래프 내 각 노드에 대해
+        G->>N: node.__call__(state, config, runtime)
+        N->>N: execute(state, ...) → dict
+        N->>St: 반환된 dict를 State에 병합
+    end
+    G->>G: OutputState 추출 → 결과
+```
+
+### 스킬 기반 개발 흐름
+
+```mermaid
+sequenceDiagram
+    participant U as Developer
+    box rgba(100, 149, 237, 0.15) Agent Skills
+        participant AA as @architecting-act
+        participant DC as @developing-cast
+        participant TC as @testing-cast
+    end
+    participant P as Act Project
+
+    Note over U,P: 1단계 — 아키텍처 설계
+    U->>AA: Act/Cast 아키텍처 설계 지시
+    AA->>U: AskUserQuestion (목적, 패턴, 기술 스택)
+    U->>AA: 선택지 응답
+    AA->>P: CLAUDE.md 생성 (아키텍처 명세)
+
+    Note over U,P: 2단계 — 구현
+    U->>DC: Cast 모듈 구현 지시
+    DC->>P: CLAUDE.md 읽기 (아키텍처 명세)
+    DC->>P: state.py → nodes.py → conditions.py → graph.py
+    DC->>P: 의존성 설치 (uv add)
+
+    Note over U,P: 3단계 — 테스팅
+    U->>TC: Cast 테스트 지시
+    TC->>P: 구현 코드 읽기
+    TC->>P: 노드 단위 테스트 + 그래프 통합 테스트
+    TC->>P: uv run pytest --cov
+```
+
 ## 프로젝트 구조
 
 ```
@@ -176,28 +257,34 @@ my_workflow/
 ├── .claude/
 │   └── skills/                    # AI 협업 가이드
 │       ├── architecting-act/      # 아키텍처 설계 및 개발 명령어
+│       │   ├── resources/         # 디자인 패턴, 질문, 결정 매트릭스
+│       │   ├── scripts/           # 아키텍처 검증 (validate_architecture.py)
+│       │   └── templates/         # CLAUDE.md 생성 템플릿
 │       ├── developing-cast/       # 구현 패턴
+│       │   └── resources/         # 50개 이상의 LangGraph 패턴 (core, agents, memory, middleware, ...)
 │       └── testing-cast/          # 테스팅 전략
+│           └── resources/         # 모킹, 픽스처, 커버리지 가이드
 ├── casts/
-│   ├── base_node.py              # 베이스 노드 클래스
-│   ├── base_graph.py             # 베이스 그래프 유틸리티
-│   └── chatbot/                  # 캐스트(그래프 패키지)
+│   ├── base_node.py              # 베이스 노드 클래스 (동기/비동기, 시그니처 검증)
+│   ├── base_graph.py             # 베이스 그래프 클래스 (추상 build 메서드)
+│   └── chatbot/                  # 캐스트 (그래프 패키지)
 │       ├── modules/
-│       │   ├── state.py          # 그래프 상태 정의
-│       │   ├── nodes.py          # 노드 구현
-│       │   ├── agents.py         # 에이전트 설정
-│       │   ├── tools.py          # 도구 정의
-│       │   ├── models.py         # LLM 모델 설정
-│       │   ├── conditions.py     # 라우팅 조건
-│       │   ├── middlewares.py    # 커스텀 미들웨어
-│       │   └── prompts.py        # 프롬프트 템플릿
-│       ├── graph.py              # 그래프 조립
-│       └── pyproject.toml        # 캐스트 의존성
+│       │   ├── state.py          # [필수] InputState, OutputState, State
+│       │   ├── nodes.py          # [필수] 노드 구현 (BaseNode 서브클래스)
+│       │   ├── agents.py         # [선택] 에이전트 설정
+│       │   ├── tools.py          # [선택] 도구 정의 / MCP 어댑터
+│       │   ├── models.py         # [선택] LLM 모델 설정
+│       │   ├── conditions.py     # [선택] 라우팅 조건
+│       │   ├── middlewares.py    # [선택] 라이프사이클 훅 (before/after agent/model)
+│       │   ├── prompts.py        # [선택] 프롬프트 템플릿
+│       │   └── utils.py          # [선택] 헬퍼 함수
+│       ├── graph.py              # 그래프 조립 (BaseGraph 서브클래스 → 진입점)
+│       └── pyproject.toml        # 캐스트별 의존성
 ├── tests/
-│   ├── cast_tests/               # 그래프 레벨 테스트
-│   └── node_tests/               # 단위 테스트
-├── langgraph.json                # LangGraph 설정
-├── pyproject.toml                # 모노레포 의존성
+│   ├── cast_tests/               # 그래프 통합 테스트
+│   └── node_tests/               # 노드 단위 테스트
+├── langgraph.json                # LangGraph 진입점 (그래프 등록)
+├── pyproject.toml                # 모노레포 워크스페이스 (uv workspace, 공유 의존성)
 ├── TEMPLATE_README.md            # 템플릿 사용 가이드라인
 └── README.md
 ```
