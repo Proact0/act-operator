@@ -1,7 +1,7 @@
 ---
 name: architecting-act
 description: Designs Act and Cast architectures through dynamic questioning, outputting validated CLAUDE.md with mermaid diagrams. Use when starting new Act project, adding cast, planning architecture, extracting sub-cast (10+ nodes), or ask "design architecture", "plan cast", "create CLAUDE.md".
-version: "2026.02.03"
+version: "2026.02.18"
 author: Proact0
 allowed-tools:
   - Bash(uv run act cast *)
@@ -25,7 +25,8 @@ Design and manage Act (project) and Cast (graph) architectures through dynamic, 
 
 ## When NOT to Use
 
-- Implementing code → use `developing-cast`
+- Implementing LangGraph cast code → use `developing-cast`
+- Implementing DeepAgent agent code → use `developing-deepagent`
 - Creating cast files → use `engineering-act`
 - Writing tests → use `testing-cast`
 
