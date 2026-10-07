@@ -62,3 +62,41 @@ NEW_CAST_LANG_OPTION = typer.Option(
     "-l",
     help="Language for scaffolded cast docs (en|kr)",
 )
+
+RAG_OPTION = typer.Option(
+    False,
+    "--rag",
+    help="Scaffold with RAG (Retrieval-Augmented Generation) pipeline",
+)
+
+NEW_CAST_RAG_OPTION = typer.Option(
+    False,
+    "--rag",
+    help="Scaffold a RAG-enabled Cast with embeddings and Vector DB setup",
+)
+
+TEMPLATE_OPTION = typer.Option(
+    "default",
+    "--template",
+    "-t",
+    help="Template type to scaffold (default|rag)",
+)
+
+NEW_CAST_TEMPLATE_OPTION = typer.Option(
+    "default",
+    "--template",
+    "-t",
+    help="Template type to scaffold (default|rag)",
+)
+
+VECTOR_DB_OPTION = typer.Option(
+    "chroma",
+    "--vector-db",
+    help="Vector DB engine for RAG template (chroma|pgvector|inmemory)",
+)
+
+NEW_CAST_VECTOR_DB_OPTION = typer.Option(
+    "chroma",
+    "--vector-db",
+    help="Vector DB engine for RAG template (chroma|pgvector|inmemory)",
+)

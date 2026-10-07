@@ -17,3 +17,8 @@ def test_graph_produces_message() -> None:
     # Verify SampleNode populated ``result``.
     assert "result" in result
     assert result["result"] == "Welcome to the Act!"
+{% if cookiecutter.rag|string|lower in ['true', '1'] %}
+    assert "context" in result
+    assert "retrieved_docs" in result
+{% endif %}
+

@@ -2,6 +2,10 @@
 
 ## Overview
 This module defines the {{ cookiecutter.cast_name }} LangGraph graph responsible for running and extracting insights.
+{% if cookiecutter.rag|string|lower in ['true', '1'] %}
+
+> **Note**: This Cast was scaffolded as a RAG (Retrieval-Augmented Generation) Cast with the `--rag` flag. It includes ready-to-use vector retrieval tools (`retrieve_documents`) and embedding factory configurations.
+{% endif %}
 
 ## Structure
 ```
@@ -47,6 +51,10 @@ uv add <package_name> --package {{ cookiecutter.cast_slug }}
 
 ## 개요
 이 모듈은 {{ cookiecutter.act_name }} 의 {{ cookiecutter.cast_name }} 진행 및 통찰 추출을 담당하는 LangGraph Graph입니다.
+{% if cookiecutter.rag|string|lower in ['true', '1'] %}
+
+> **참고**: 이 Cast는 RAG(검색 증강 생성) 기반으로 생성되었습니다. 벡터 검색 도구(`retrieve_documents`), RAG 상태 스키마, 임베딩 팩토리 템플릿이 사전 구성되어 있습니다.
+{% endif %}
 
 ## 구조
 ```
