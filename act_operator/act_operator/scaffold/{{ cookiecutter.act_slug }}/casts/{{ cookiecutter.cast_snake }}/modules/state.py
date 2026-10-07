@@ -23,6 +23,37 @@ class InputState(TypedDict):
     query: str
 
 
+{% if cookiecutter.rag|string|lower in ['true', '1'] %}
+class OutputState(TypedDict):
+    """Output state container.
+
+    Attributes:
+        result: Generated answer
+        context: Retrieved context documents
+        retrieved_docs: List of retrieved document contents
+    """
+
+    result: str
+    context: str
+    retrieved_docs: list[str]
+
+
+class State(MessagesState):
+    """Graph state container for RAG.
+
+    Attributes:
+        query: User query
+        result: Generated answer
+        context: Retrieved context documents
+        retrieved_docs: List of retrieved document contents
+        messages: Additional messages (inherited from MessagesState)
+    """
+
+    result: str
+    query: str
+    context: str
+    retrieved_docs: list[str]
+{% else %}
 class OutputState(TypedDict):
     """Output state container.
 
@@ -45,3 +76,4 @@ class State(MessagesState):
     # It is defined as: messages: Annotated[list[AnyMessage], add_messages]
     result: str
     query: str
+{% endif %}

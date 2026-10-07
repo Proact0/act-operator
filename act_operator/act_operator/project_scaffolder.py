@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import typer
 from rich.console import Console
@@ -89,14 +90,22 @@ def get_scaffold_root() -> Path:
 
 
 def build_template_context(
-    act: NameVariants, cast: NameVariants, language: str
-) -> dict[str, str]:
+    act: NameVariants,
+    cast: NameVariants,
+    language: str,
+    rag: bool = False,
+    template: str = "default",
+    vector_db: str = "chroma",
+) -> dict[str, Any]:
     """Build the template context for cookiecutter.
 
     Args:
         act: Act name variants.
         cast: Cast name variants.
         language: Language display name.
+        rag: Whether to scaffold with RAG pipeline.
+        template: Template type (default|rag).
+        vector_db: Vector DB engine (chroma|pgvector|inmemory).
 
     Returns:
         Dictionary of template context variables.
@@ -110,6 +119,9 @@ def build_template_context(
         "cast_snake": cast.snake,
         "cast_pascal": cast.pascal,
         "language": language,
+        "rag": rag,
+        "cast_template": template,
+        "vector_db": vector_db,
     }
 
 
@@ -191,6 +203,9 @@ def generate_project(
     act_name: str | None,
     cast_name: str | None,
     language: str | None,
+    rag: bool = False,
+    template: str = "default",
+    vector_db: str = "chroma",
 ) -> None:
     """Generate a new Act project with initial Cast.
 
@@ -199,6 +214,9 @@ def generate_project(
         act_name: Optional Act name.
         cast_name: Optional Cast name.
         language: Optional language code.
+        rag: Whether to scaffold with RAG pipeline.
+        template: Template type (default|rag).
+        vector_db: Vector DB engine (chroma|pgvector|inmemory).
 
     Raises:
         typer.Exit: If project creation fails.
@@ -235,7 +253,9 @@ def generate_project(
 
     console.print("[bold green]Starting Act project scaffolding...[/bold green]")
 
-    context = build_template_context(act, cast, lang)
+    context = build_template_context(
+        act, cast, lang, rag=rag, template=template, vector_db=vector_db
+    )
     try:
         render_cookiecutter_template(scaffold_root, target_dir, context)
     except FileExistsError as error:

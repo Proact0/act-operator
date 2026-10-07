@@ -7,6 +7,9 @@
   "cast_snake": "cast_name",
   "cast_pascal": "CastName",
   "language": "en",
+  "rag": false,
+  "cast_template": "default",
+  "vector_db": "chroma",
   "_copy_without_render": [
     ".claude/skills/architecting-act/scripts",
     ".claude/skills/architecting-act/templates",

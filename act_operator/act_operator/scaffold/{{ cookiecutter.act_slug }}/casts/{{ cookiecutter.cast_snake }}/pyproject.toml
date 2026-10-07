@@ -4,4 +4,18 @@ version = "0.1.0"
 description = "{{ cookiecutter.cast_name }} Graph"
 readme = "README.md"
 requires-python = ">=3.11"
+{% if cookiecutter.rag|string|lower in ['true', '1'] %}
+dependencies = [
+    # Vector DB backend: {{ cookiecutter.vector_db }}
+{% if cookiecutter.vector_db == 'pgvector' %}
+    # "langchain-postgres>=0.0.12",
+    # "psycopg[binary]>=3.1.0",
+{% elif cookiecutter.vector_db == 'chroma' %}
+    # "langchain-chroma>=0.2.0",
+    # "chromadb>=0.5.0",
+{% endif %}
+    # "langchain-openai>=0.3.0",
+]
+{% else %}
 dependencies = []
+{% endif %}

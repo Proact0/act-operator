@@ -19,6 +19,40 @@ from langchain_core.messages import AIMessage
 from casts.base_node import AsyncBaseNode, BaseNode
 
 
+{% if cookiecutter.rag|string|lower in ['true', '1'] %}
+from casts.{{ cookiecutter.cast_snake }}.modules.tools import retrieve_documents
+
+
+class SampleNode(BaseNode):
+    """RAG-enabled sync node that retrieves relevant context and answers.
+
+    Attributes:
+        name: Canonical name of the node (class name by default).
+        verbose: Flag indicating whether detailed logging is enabled.
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def execute(self, state):
+        """Execute the RAG node.
+
+        Args:
+            state: Current graph state containing user query.
+
+        Returns:
+            dict: State updates with retrieved context, docs, result, and messages.
+        """
+        query = state.get("query", "")
+        context = retrieve_documents.invoke(query)
+        welcome = "Welcome to the Act!"
+        return {
+            "result": welcome,
+            "context": context,
+            "retrieved_docs": [context],
+            "messages": [AIMessage(content=f"{welcome} (Context: {context})")],
+        }
+{% else %}
 class SampleNode(BaseNode):
     """Simple sync node - only uses state.
 
@@ -46,6 +80,7 @@ class SampleNode(BaseNode):
             "result": welcome,
             "messages": [AIMessage(content=f"{welcome} by Sync Node")],
         }
+{% endif %}
 
 
 class AsyncSampleNode(AsyncBaseNode):

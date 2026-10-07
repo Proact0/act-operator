@@ -94,13 +94,24 @@ def _copy_cast_test(rendered_root: Path, act_path: Path, cast_snake: str) -> Non
     )
 
 
-def generate_cast_project(*, act_path: Path, cast_name: str, language: str) -> None:
+def generate_cast_project(
+    *,
+    act_path: Path,
+    cast_name: str,
+    language: str,
+    rag: bool = False,
+    template: str = "default",
+    vector_db: str = "chroma",
+) -> None:
     """Generate a new Cast within an existing Act project.
 
     Args:
         act_path: Path to the Act project.
         cast_name: Name of the new Cast.
         language: Language code for the Cast.
+        rag: Whether to scaffold a RAG-enabled Cast.
+        template: Template type (default|rag).
+        vector_db: Vector DB engine (chroma|pgvector|inmemory).
 
     Raises:
         typer.Exit: If Cast creation fails.
@@ -127,6 +138,9 @@ def generate_cast_project(*, act_path: Path, cast_name: str, language: str) -> N
             "cast_snake": cast_variants.snake,
             "cast_pascal": cast_variants.pascal,
             "language": normalize_lang(language),
+            "rag": rag,
+            "cast_template": template,
+            "vector_db": vector_db,
         },
         post_process=lambda rendered_root: _copy_cast_test(
             rendered_root, act_path, cast_variants.snake
@@ -142,6 +156,11 @@ def generate_cast_project(*, act_path: Path, cast_name: str, language: str) -> N
     except RuntimeError as error:
         console.print(f"[red]Failed to update langgraph.json: {error}[/red]")
         raise typer.Exit(code=EXIT_CODE_ERROR) from error
+
+    if rag:
+        console.print(
+            f"[bold cyan]🔍 RAG pipeline configured for '{cast_variants.snake}' (Backend: {vector_db})[/bold cyan]"
+        )
 
     console.print(
         f"[bold green]Cast '{cast_variants.snake}' added successfully![/bold green]"

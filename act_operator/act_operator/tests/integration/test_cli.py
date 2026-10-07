@@ -367,3 +367,110 @@ def test_cast_command_aborts_when_cast_directory_exists(tmp_path: Path) -> None:
     assert second_result.exit_code != 0
     combined_output = (second_result.stdout or "") + (second_result.stderr or "")
     assert "cast directory already exists and is not empty" in combined_output
+
+
+def test_cast_command_with_rag_flag(tmp_path: Path) -> None:
+    """Test that `act cast --rag` generates a RAG-enabled Cast with embeddings & tools."""
+    # Given an existing Act project
+    target_dir = _create_project(tmp_path)
+
+    # When `act cast` is executed with --rag
+    result = runner.invoke(
+        app,
+        [
+            "cast",
+            "--path",
+            str(target_dir),
+            "--cast-name",
+            "Knowledge Cast",
+            "--rag",
+            "--lang",
+            "en",
+        ],
+    )
+
+    assert result.exit_code == 0, result.stdout
+
+    cast_dir = target_dir / "casts" / "knowledge_cast"
+    models_file = cast_dir / "modules" / "models.py"
+    tools_file = cast_dir / "modules" / "tools.py"
+    state_file = cast_dir / "modules" / "state.py"
+    test_file = target_dir / "tests" / "cast_tests" / "knowledge_cast_test.py"
+    readme_file = cast_dir / "README.md"
+
+    # Then RAG-specific artifacts should be generated
+    assert cast_dir.exists()
+    assert "get_embedding_model" in _read(models_file)
+    assert "retrieve_documents" in _read(tools_file)
+    assert "retrieved_docs" in _read(state_file)
+    assert "context" in _read(state_file)
+    assert "retrieved_docs" in _read(test_file)
+    assert "RAG" in _read(readme_file)
+
+
+def test_new_command_with_rag_flag(tmp_path: Path) -> None:
+    """Test that `act new --rag` generates a project with an initial RAG Cast."""
+    # Given a target directory and arguments with --rag
+    target_dir = tmp_path / "rag-act"
+
+    # When `act new` is executed with --rag
+    result = runner.invoke(
+        app,
+        [
+            "new",
+            "--path",
+            str(target_dir),
+            "--act-name",
+            "Rag Act",
+            "--cast-name",
+            "Rag Cast",
+            "--rag",
+            "--lang",
+            "kr",
+        ],
+    )
+
+    assert result.exit_code == 0, result.stdout
+
+    cast_dir = target_dir / "casts" / "rag_cast"
+    models_file = cast_dir / "modules" / "models.py"
+    tools_file = cast_dir / "modules" / "tools.py"
+    state_file = cast_dir / "modules" / "state.py"
+
+    assert "get_embedding_model" in _read(models_file)
+    assert "retrieve_documents" in _read(tools_file)
+    assert "retrieved_docs" in _read(state_file)
+
+
+def test_cast_command_with_template_and_vector_db(tmp_path: Path) -> None:
+    """Test `act cast --template rag --vector-db pgvector` scaffolds pgvector setup."""
+    # Given an existing Act project
+    target_dir = _create_project(tmp_path)
+
+    # When `act cast` is executed with --template rag --vector-db pgvector
+    result = runner.invoke(
+        app,
+        [
+            "cast",
+            "--path",
+            str(target_dir),
+            "--cast-name",
+            "PolicySearch",
+            "--template",
+            "rag",
+            "--vector-db",
+            "pgvector",
+            "--lang",
+            "kr",
+        ],
+    )
+
+    assert result.exit_code == 0, result.stdout
+
+    cast_dir = target_dir / "casts" / "policysearch"
+    pyproject_file = cast_dir / "pyproject.toml"
+    tools_file = cast_dir / "modules" / "tools.py"
+
+    assert cast_dir.exists()
+    assert "retrieve_documents" in _read(tools_file)
+    assert "pgvector" in _read(pyproject_file)
